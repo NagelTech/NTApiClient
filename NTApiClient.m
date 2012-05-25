@@ -25,13 +25,13 @@ NSString *NTApiHeaderAuthorization = @"Authorization";
 // Log enable/disable
 #define LOG_ENABLE
 //#define LOG_ENABLE_DEBUG            // Logs POST data and headers
-//#define LOG_ENABLE_INFO             // Logs Request URL & parsed response (truncated)
-//#define LOG_ENABLE_WARN             // not currently used
+#define LOG_ENABLE_INFO             // Logs Request URL & parsed response (truncated)
+#define LOG_ENABLE_WARN             // not currently used
 #define LOG_ENABLE_ERROR            // Logs API errors
 
 // logging system selection
-#define LOG_LLOG
-//#define LOG_NSLOG
+//#define LOG_LLOG
+#define LOG_NSLOG
 
 
 #if !defined(LOG_ENABLE)

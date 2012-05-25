@@ -30,8 +30,8 @@ NSString *NTApiHeaderAuthorization = @"Authorization";
 #define LOG_ENABLE_ERROR            // Logs API errors
 
 // logging system selection
-//#define LOG_LLOG
-#define LOG_NSLOG
+#define LOG_LLOG
+//#define LOG_NSLOG
 
 
 #if !defined(LOG_ENABLE)

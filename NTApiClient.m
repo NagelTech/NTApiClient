@@ -6,8 +6,6 @@
 //
 
 #import "NTApiClient.h"
-
-#import "Logger.h"
 #import "SBJson.h"
 
 #import "NSUrlConnection+NTCompletionHandler.h"

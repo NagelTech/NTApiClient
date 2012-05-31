@@ -114,7 +114,7 @@
 
 -(BOOL)applyArgToBuilder:(NTApiRequestBuilder *)builder
 {
-    return [builder addUrlValueWithName:self.name value:self.value];
+    return [builder addFormValueWithName:self.name value:self.value];
 }
 
 

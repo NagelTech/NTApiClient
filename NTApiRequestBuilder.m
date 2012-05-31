@@ -372,6 +372,8 @@ static char NTBase64EncodingTable[64] = {
     
     else if ( self.rawData != nil )
         [request setHTTPBody:self.rawData];
+    else
+        [request setHTTPBody:[[NSString stringWithString:@""] dataUsingEncoding:NSUTF8StringEncoding]]; // It's an empty request, but we can't leave it null
 
     // Set our method...
     

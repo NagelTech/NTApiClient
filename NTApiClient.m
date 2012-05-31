@@ -19,34 +19,45 @@ NSString *NTApiOptionRawData = @"NTApiOptionRawData";
 NSString *NTApiHeaderContentType = @"Content-Type";
 NSString *NTApiHeaderAuthorization = @"Authorization";
 
+NTApiLogType NTApiLogTypeDebug = @"Debug";
+NTApiLogType NTApiLogTypeInfo = @"Info";
+NTApiLogType NTApiLogTypeWarn = @"Warn";
+NTApiLogType NTApiLogTypeError = @"Error";
+
+
 
 #pragma mark Log Configuration
 
-// Log enable/disable
-#define LOG_ENABLE
-//#define LOG_ENABLE_DEBUG            // Logs POST data and headers
-#define LOG_ENABLE_INFO             // Logs Request URL & parsed response (truncated)
-#define LOG_ENABLE_WARN             // not currently used
-#define LOG_ENABLE_ERROR            // Logs API errors
-
 // logging system selection
-//#define LOG_LLOG
-#define LOG_NSLOG
+//#define NTAPI_LOG_NONE
+//#define NTAPI_LOG_INTERNAL
+//#define NTAPI_LOG_LLOG
+
+// Log enable/disable
+//#define NTAPI_LOG_DISABLE_DEBUG            // Logs POST data and headers
+//#define NTAPI_LOG_DISABLE_INFO             // Logs Request URL & parsed response (truncated)
+//#define NTAPI_LOG_DISABLE_WARN             // not currently used
+//#define NTAPI_LOG_DISABLE_ERROR            // Logs API errors
+
+#if !defined(NTAPI_LOG_NONE) && !defined(NTAPI_LOG_INTERNAL) && !defined(NTAPI_LOG_LLOG)
+#   warning No Log option is defined (NTAPI_LOG_NONE, NTAPI_LOG_INTERNAL or NTAPI_LOG_LLOG) so default of NTAPI_LOG_INTERNAL will be used
+#   define NTAPI_LOG_INTERNAL
+#endif
 
 
-#if !defined(LOG_ENABLE)
+#if defined(NTAPI_LOG_NONE)
 #   define LogDebug(format, ...)   
 #   define LogInfo(format, ...)    
 #   define LogWarn(format, ...)    
 #   define LogError(format, ...)   
 
-#elif defined(LOG_NSLOG)
-#   define LogDebug(format, ...)   NSLog(@"Debug: " format, ##__VA_ARGS__)
-#   define LogInfo(format, ...)    NSLog(format, ##__VA_ARGS__)
-#   define LogWarn(format, ...)    NSLog(@"Warning: " format, ##__VA_ARGS__)
-#   define LogError(format, ...)   NSLog(@"Error: " format, ##__VA_ARGS__)
+#elif defined(NTAPI_LOG_INTERNAL)
+#   define LogDebug(format, ...)   [self writeLogWithType:NTApiLogTypeDebug andFormat:format, ##__VA_ARGS__]
+#   define LogInfo(format, ...)    [self writeLogWithType:NTApiLogTypeInfo andFormat:format, ##__VA_ARGS__]
+#   define LogWarn(format, ...)    [self writeLogWithType:NTApiLogTypeWarn andFormat:format, ##__VA_ARGS__]
+#   define LogError(format, ...)   [self writeLogWithType:NTApiLogTypeError andFormat:format, ##__VA_ARGS__]
 
-#elif defined(LOG_LLOG)
+#elif defined(NTAPI_LOG_LLOG)
 #   import "Logger.h"
 #   define LogDebug(format, ...)   LDebug(format, ##__VA_ARGS__)
 #   define LogInfo(format, ...)    LLog(format, ##__VA_ARGS__)
@@ -56,22 +67,22 @@ NSString *NTApiHeaderAuthorization = @"Authorization";
 #endif
 
 
-#ifndef LOG_ENABLE_DEBUG
+#ifdef NTAPI_LOG_DISABLE_DEBUG
 #   undef LogDebug
 #   define LogDebug(format, ...)   
 #endif
 
-#ifndef LOG_ENABLE_INFO
+#ifdef NTAPI_LOG_DISABLE_INFO
 #   undef LogInfo
 #   define LogInfo(format, ...)   
 #endif
 
-#ifndef LOG_ENABLE_WARN
+#ifdef NTAPI_LOG_DISABLE_WARN
 #   undef LogWarn
 #   define LogWarn(format, ...)   
 #endif
 
-#ifndef LOG_ENABLE_ERROR
+#ifdef NTAPI_LOG_DISABLE_ERROR
 #   undef LogError
 #   define LogError(format, ...)   
 #endif
@@ -82,6 +93,24 @@ NSString *NTApiHeaderAuthorization = @"Authorization";
 
 static NSMutableDictionary *sDefaults = nil;
 static Reachability *sReachability = nil;
+
+
+-(void)writeLogWithType:(NTApiLogType)logType andFormat:(NSString *)format, ...
+{
+    // override this to provide your own logging...
+    
+    va_list args;
+    va_start(args, format);
+    
+    NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+    
+    va_end(args);
+    
+    if ( logType != NTApiLogTypeInfo )
+        NSLog(@"(API) %@: %@", logType, message);
+    else 
+        NSLog(@"(API) %@", message);
+}
 
 
 +(void)setDefault:(NSString *)key value:(id)value

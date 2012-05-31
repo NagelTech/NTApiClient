@@ -18,6 +18,12 @@ extern NSString *NTApiOptionRawData;
 extern NSString *NTApiHeaderContentType;
 extern NSString *NTApiHeaderAuthorization;
 
+typedef NSString *NTApiLogType;
+extern NTApiLogType NTApiLogTypeDebug;
+extern NTApiLogType NTApiLogTypeInfo;
+extern NTApiLogType NTApiLogTypeWarn;
+extern NTApiLogType NTApiLogTypeError;
+
 
 @protocol NTApiClientDefaultProvider <NSObject>
 
@@ -39,6 +45,9 @@ extern NSString *NTApiHeaderAuthorization;
 
 
 -(id)init;
+
+-(void)writeLogWithType:(NTApiLogType)logType andFormat:(NSString *)format, ...;
+                                            
 
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 

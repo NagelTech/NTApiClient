@@ -67,7 +67,7 @@
 {
     // based on: http://madebymany.com/blog/url-encoding-an-nsstring-on-ios
     
-    return (__bridge NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
+    return (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
                                                                         (__bridge CFStringRef)string,
                                                                         NULL,
                                                                         (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",

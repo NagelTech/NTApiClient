@@ -277,6 +277,31 @@
     return [NSString stringWithFormat:@"Option %@ = %@", self.name, self.value];
 }
 
+
++(NTApiOptionArg *)optionRawData
+{
+    return [NTApiOptionArg optionWithName:NTApiOptionRawData];
+}
+
+
++(NTApiOptionArg *)optionRequestHandlerThread:(NTApiThreadType)threadType
+{
+    return [NTApiOptionArg optionWithName:NTApiOptionResponseHandlerThreadType value:threadType];
+}
+
+
++(NTApiOptionArg *)optionUploadHandlerThread:(NTApiThreadType)threadType
+{
+    return [NTApiOptionArg optionWithName:NTApiOptionUploadHandlerThreadType value:threadType];
+}
+
+
++(NTApiOptionArg *)optionDownloadHandlerThread:(NTApiThreadType)threadType
+{
+    return [NTApiOptionArg optionWithName:NTApiOptionDownloadHandlerThreadType value:threadType];
+}
+
+
 @end
 
 

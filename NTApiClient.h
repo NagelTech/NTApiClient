@@ -7,33 +7,18 @@
 
 #import <Foundation/Foundation.h>
 
+#import "NTApiConst.h"
 #import "NTApiError.h"
 #import "NTApiArg.h"
 #import "NTApiRequestBuilder.h"
 #import "Reachability.h"
 
 
-extern NSString *NTApiOptionRawData;
 
-extern NSString *NTApiHeaderContentType;
-extern NSString *NTApiHeaderAuthorization;
-
-typedef NSString *NTApiLogType;
-extern NTApiLogType NTApiLogTypeDebug;
-extern NTApiLogType NTApiLogTypeInfo;
-extern NTApiLogType NTApiLogTypeWarn;
-extern NTApiLogType NTApiLogTypeError;
-
-
-@protocol NTApiClientDefaultProvider <NSObject>
-
--(id)getApiClientDefault:(NSString *)key;
-
-@end
+@protocol NTApiClientDefaultProvider;
 
 
 @interface NTApiClient : NSObject
-
 
 @property (strong, atomic)  NSString                *baseUrl;
 
@@ -61,3 +46,11 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
 
 
 @end
+
+
+@protocol NTApiClientDefaultProvider <NSObject>
+
+-(id)getApiClientDefault:(NSString *)key;
+
+@end
+

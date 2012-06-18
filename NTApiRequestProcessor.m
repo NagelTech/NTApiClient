@@ -47,7 +47,7 @@
 
 -(void)start
 {
-    LLog(@"Starting request: %@", mRequest.URL);
+//    LLog(@"Starting request: %@", mRequest.URL);
     
     mConnection = [[NSURLConnection alloc] initWithRequest:mRequest delegate:self startImmediately:NO];
 
@@ -68,7 +68,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    LDebug(@"didReceiveResponse");
+//    LDebug(@"didReceiveResponse");
     mResponse = response;
     mExpectedContentLength = (response.expectedContentLength == NSURLResponseUnknownLength) ? 0 : response.expectedContentLength;
     mData = [NSMutableData dataWithCapacity:mExpectedContentLength];
@@ -80,7 +80,7 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    LError(@"connectionDidFailWithError: %@", error);
+//    LError(@"connectionDidFailWithError: %@", error);
     
     if ( mResponseHandler )
         mResponseHandler(nil, nil, error);
@@ -91,7 +91,7 @@
 {
     [mData appendData:data];
     
-    LDebug(@"didReceiveData: (received %d) %d/%d bytes", data.length, mData.length, mExpectedContentLength);
+//    LDebug(@"didReceiveData: (received %d) %d/%d bytes", data.length, mData.length, mExpectedContentLength);
 
     if ( mDownloadProgressHandler )
         mDownloadProgressHandler(mData.length, mExpectedContentLength);
@@ -100,7 +100,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    LLog(@"connectionDidFinishLoading");
+//    LLog(@"connectionDidFinishLoading");
     
     // If we have a download progress handler and we didn't end up with the size we thought we would have, go ahead and 
     // do a final update...
@@ -125,7 +125,7 @@
 
 -(void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
-    LDebug(@"didSendBodyData %d/%d bytes", totalBytesWritten, totalBytesExpectedToWrite);
+//    LDebug(@"didSendBodyData %d/%d bytes", totalBytesWritten, totalBytesExpectedToWrite);
     
     if ( mUploadProgressHandler )
         mUploadProgressHandler(totalBytesWritten, totalBytesExpectedToWrite);

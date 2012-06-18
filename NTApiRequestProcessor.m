@@ -1,9 +1,8 @@
 //
 //  NTApiRequestProcesor.m
-//  Clucks
 //
-//  Created by Ethan Nagel on 6/13/12.
-//  Copyright (c) 2012 BitDonkey, LLC. All rights reserved.
+//  Copyright (c) 2011-2012 Ethan Nagel. All rights reserved.
+//  See LICENSE for license details
 //
 
 #import "NTApiRequestProcessor.h"

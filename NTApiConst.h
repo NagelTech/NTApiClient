@@ -1,8 +1,8 @@
 //
 //  NTApiConst.h
 //
-//  Created by Ethan Nagel on 6/16/12.
-//  Copyright (c) 2012 BitDonkey, LLC. All rights reserved.
+//  Copyright (c) 2011-2012 Ethan Nagel. All rights reserved.
+//  See LICENSE for license details
 //
 
 #import <Foundation/Foundation.h>

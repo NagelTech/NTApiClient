@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "NTApiConst.h"
+
 @class NTApiRequestBuilder;
 
 
@@ -96,6 +98,11 @@
 
 +(NTApiOptionArg *)optionWithName:(NSString *)name value:(NSString *)value;
 +(NTApiOptionArg *)optionWithName:(NSString *)name;
+
++(NTApiOptionArg *)optionRawData;
++(NTApiOptionArg *)optionRequestHandlerThread:(NTApiThreadType)threadType;
++(NTApiOptionArg *)optionUploadHandlerThread:(NTApiThreadType)threadType;
++(NTApiOptionArg *)optionDownloadHandlerThread:(NTApiThreadType)threadType;
 
 -(BOOL)applyArgToBuilder:(NTApiRequestBuilder *)builder;
 -(NSString *)description;

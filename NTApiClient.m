@@ -5,23 +5,10 @@
 //  See LICENSE for license details
 //
 
-#import "NTApiClient.h"
 #import "SBJson.h"
 
-#import "NSUrlConnection+NTCompletionHandler.h"
-#import "NetworkActivityManager.h"
-
-
-NSString *NTApiOptionRawData = @"NTApiOptionRawData";
-
-NSString *NTApiHeaderContentType = @"Content-Type";
-NSString *NTApiHeaderAuthorization = @"Authorization";
-
-NTApiLogType NTApiLogTypeDebug = @"Debug";
-NTApiLogType NTApiLogTypeInfo = @"Info";
-NTApiLogType NTApiLogTypeWarn = @"Warn";
-NTApiLogType NTApiLogTypeError = @"Error";
-
+#import "NTApiClient.h"
+#import "NTApiRequestProcessor.h"
 
 
 #pragma mark Log Configuration
@@ -86,11 +73,28 @@ NTApiLogType NTApiLogTypeError = @"Error";
 #endif
 
 
+@interface NTApiClient ()
+{
+}
+
+
++(NSThread *)requestThread;
+
++(void)requestThreadMain;
+
+@end
+
+
 @implementation NTApiClient
 
 
-static NSMutableDictionary *sDefaults = nil;
-static Reachability *sReachability = nil;
+static NSMutableDictionary  *sDefaults = nil;
+static Reachability         *sReachability = nil;
+
+static NSThread             *sRequestThread = nil;
+static NSRunLoop            *sRequestRunLoop = nil;
+static NSPort               *sRequestRunLoopPort = nil;
+static NSOperationQueue     *sResponseQueue = nil;
 
 
 -(void)writeLogWithType:(NTApiLogType)logType andFormat:(NSString *)format, ...
@@ -115,8 +119,8 @@ static Reachability *sReachability = nil;
 {
     if ( !sDefaults )
         sDefaults = [NSMutableDictionary new];
-                    
-    [sDefaults setObject:value forKey:key];
+
+    [sDefaults setObject:(value) ? value : [NSNull null] forKey:key];
 }
 
 
@@ -129,6 +133,9 @@ static Reachability *sReachability = nil;
     
     if ( value && [value conformsToProtocol:@protocol(NTApiClientDefaultProvider)] )
         value = [value getApiClientDefault:key];
+    
+    if ( value == [NSNull null] )
+        value = nil;
     
     return value;
 }
@@ -143,6 +150,67 @@ static Reachability *sReachability = nil;
     
     return sReachability;
 }
+
+
++(NSThread *)requestThread
+{
+    @synchronized(self)
+    {
+        if ( !sRequestThread )
+        {
+            sRequestThread = [[NSThread alloc] initWithTarget:self selector:@selector(requestThreadMain) object:nil];
+            
+            sRequestThread.name = @"NTApiRequestThread";
+            
+            [sRequestThread start];
+        }
+        
+        return sRequestThread;
+    }
+}
+
+
++(NSOperationQueue *)responseQueue
+{
+    @synchronized(self)
+    {
+        if ( !sResponseQueue )
+        {
+            sResponseQueue = [[NSOperationQueue alloc] init];
+        }
+        
+        return sResponseQueue;
+    }
+}
+
+                              
++(void)requestThreadMain
+{
+    LLog(@"Starting Request Thread");
+
+    // First, we need to prepare our run loop...
+    
+    sRequestRunLoop = [NSRunLoop currentRunLoop];
+    
+    sRequestRunLoopPort = [NSPort port];
+    [sRequestRunLoop addPort:sRequestRunLoopPort forMode:NSDefaultRunLoopMode];
+    
+    [sRequestRunLoop run];
+    
+    // This will continue running until mPort is removed from the Run Loop.
+    
+    LLog(@"Exiting Request Thread");
+    
+    @synchronized(self)
+    {
+        // We are now done with these, so we can clean up.
+        
+        sRequestRunLoopPort = nil;
+        sRequestRunLoop = nil;
+        sRequestThread = nil;   // will cause 
+    }
+}
+                              
 
 
 @synthesize baseUrl = mBaseUrl;
@@ -167,6 +235,12 @@ static Reachability *sReachability = nil;
     
     [allArgs addObject:[NTApiBaseUrlArg argWithBaseUrl:[NSString stringWithFormat:@"%@/%@", self.baseUrl, command]]];
     
+    // Main Thread is the default for handlers...
+    
+    [allArgs addObject:[NTApiOptionArg optionRequestHandlerThread:NTApiThreadTypeMain]];
+    [allArgs addObject:[NTApiOptionArg optionUploadHandlerThread:NTApiThreadTypeMain]];
+    [allArgs addObject:[NTApiOptionArg optionDownloadHandlerThread:NTApiThreadTypeMain]];
+    
     // now add request-specific args...
     
     if ( inputArgs )
@@ -176,12 +250,23 @@ static Reachability *sReachability = nil;
 }
 
 
+-(BOOL)isMultitaskingSupported
+{
+    UIDevice *device = [UIDevice currentDevice];
+    
+    return ( [device respondsToSelector:@selector(isMultitaskingSupported)] && device.multitaskingSupported );
+}
+
+
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 
     responseHandler:(void (^)(NSDictionary *response, NTApiError *error))responseHandler
 uploadProgressHandler:(void (^)(int bytesSent, int totalBytes))uploadProgressHandler
 downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadProgressHandler;
 {
+    // Note: This code is a little "blocks crazy", might be worth refactoring into a couple methods in the 
+    // RequestProcessor...
+    
     // Process our arguments and create a request...
     
     NSArray *allArgs = [self createArgsForCommand:command withArgs:args];
@@ -190,14 +275,95 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     
     NSMutableURLRequest *request = [builder createRequest];
     
+    NSDictionary *options = builder.options;
+    
+    // BG Tasks support...
+    
+    if ( [self isMultitaskingSupported] )
+    {
+        BOOL responseOnMainThread = [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeMain;
+        
+        UIBackgroundTaskIdentifier taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:
+        ^{
+            // Handle notification if we are running in the background and being killed...
+            
+            NTApiError *error = [NTApiError errorWithCode:NTApiErrorCodeError message:@"Background task timed out"];
+            
+            LogError(@"Background task timed out!");
+            
+            if ( responseOnMainThread )
+            {
+                dispatch_async(dispatch_get_main_queue(), ^
+                { 
+                    responseHandler(nil, error); 
+                });
+               
+            }
+            
+            else
+                responseHandler(nil, error);
+        }];
+        
+//        LogDebug(@"Starting background task: %d", taskId);
+        
+        // Wrap our response so the background task is stopped...
+        
+        void (^temp)(NSDictionary *response, NTApiError *error) = ^(NSDictionary *response, NTApiError *error)
+        {
+            responseHandler(response, error);
+//            LogDebug(@"Completing background task: %d", taskId);
+            [[UIApplication sharedApplication] endBackgroundTask:taskId];
+        };
+       
+        responseHandler = temp;
+    }
+        
+    // Create wrappers for any blocks that need to run on the main thread...
+    
+    if ( [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeMain )
+    {
+        void (^temp)(NSDictionary *response, NTApiError *error) = ^(NSDictionary *response, NTApiError *error)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^
+            { 
+                responseHandler(response, error); 
+           });
+        };
+        
+        responseHandler = temp;
+    }
+    
+    if ( uploadProgressHandler && ([options objectForKey:NTApiOptionUploadHandlerThreadType] == NTApiThreadTypeMain) )
+    {
+        void (^temp)(int bytesSent, int totalBytes) = ^(int bytesSent, int totalBytes)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{ uploadProgressHandler(bytesSent, totalBytes); });
+        };
+        
+        uploadProgressHandler = temp;
+    }
+    
+    if ( downloadProgressHandler && ([options objectForKey:NTApiOptionDownloadHandlerThreadType] == NTApiThreadTypeMain) )
+    {
+        void (^temp)(int bytesReceived, int totalBytes) = ^(int bytesReceived, int totalBytes)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{ downloadProgressHandler(bytesReceived, totalBytes); });
+        };
+        
+        downloadProgressHandler = temp;
+    }
+    
+    // If the request builder failed, then we can error out...
+    
     if ( !request )
     {
         LogError(@"%@ = ERROR: %@", command, builder.error);
         responseHandler(nil, builder.error);
+
         return ;
     }
     
-    NSDictionary *options = builder.options;
+    // output some useful debugging info..
     
     LogInfo(@"%@ %@", [request HTTPMethod], [request URL]);
 /*    
@@ -214,93 +380,101 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
         LogDebug(@"< < < < < < < < < < < < < < < < < < < < <");
     }
     
-    [NetworkActivityManager beginActivity];
+     NTApiRequestProcessor *requestProcessor = [[NTApiRequestProcessor alloc] initWithURLRequest:request];
     
-    // For now, this must be on the main thread...
+    requestProcessor.responseHandler = ^(NSData *data, NSURLResponse *response,  NSError *error)
+    {
+        // Enqueue our response processing...
+        
+        [[NTApiClient responseQueue] addOperationWithBlock:^
+        {
+//            LogInfo(@"Processing Response");
+            
+            if ( error != nil )
+            {
+                LogError(@"%@ = ERROR: %@", command, error);
+                responseHandler(nil, [NTApiError errorWithNSError:error]);                
+                return ;
+            }
+            
+            NSDictionary *json = nil;
+            
+            if ( [options objectForKey:NTApiOptionRawData] )
+            {
+                json = [NSDictionary dictionaryWithObject:data forKey:@"rawData"];
+                LogInfo(@"%@ = rawData[%d bytes]", command, data.length);
+            }
+            
+            else // parse as JSON
+            {
+                SBJsonParser *parser = [[SBJsonParser alloc] init];
+                
+                json = [parser objectWithString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+                
+                // Attempt to recover from errors/warnings outputted by PHP...
+                
+                if ( !json )
+                {
+                    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                    
+                    // if it looks like a PHP error message...
+                    
+                    if ( [text hasPrefix:@"<br/>"] )
+                    {
+                        // Try to find the start of the JSON data...
+                        
+                        NSRange range = [text rangeOfString:@"{"];
+                        
+                        if ( range.location != NSNotFound )
+                        {
+                            NSString *phpMessages = [text substringToIndex:range.location];
+                            text = [text substringFromIndex:range.location];
+                            
+                            LogError(@"Found PHP Messages: %@", phpMessages);
+                            
+                            json = [parser objectWithString:text];
+                            
+                            if ( json )
+                            {
+                                NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithDictionary:json];
+                                
+                                [temp setObject:phpMessages forKey:@"php_messages"];
+                                
+                                json = temp;
+                            }
+                        }
+                    }
+                }
+                
+                if ( !json )
+                {
+                    //LogError(@"%@ = ERROR: Unable to parse JSON Response: %@", command, parser.error);
+                    LogError(@"%@ = ERROR: Unable to parse JSON Response", command);
+                    LogError(@"> > > > > > > > > > > > > > > > > > > > >");
+                    LogError(@"%.*s", [data length], [data bytes]);
+                    LogError(@"> > > > > > > > > > > > > > > > > > > > >");
+                    
+                    responseHandler(nil, [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"]);
+                    
+                    return ;
+                }
+                
+                LogInfo(@"%@ = %@", command, json);
+            }
+
+            // execute the responsehandler on the appropriate thread...
+            
+            responseHandler(json, nil);
+        }];
+        
+    };
     
-    dispatch_async(dispatch_get_main_queue(), 
-    ^{
-        [NSURLConnection sendAsynchronousRequest:request shouldCacheResponse:NO withCompletionHandler:^(NSData *data, NSURLResponse *response, NSError *error) 
-         {
-             [NetworkActivityManager endActivity];
-             
-             if ( error != nil )
-             {
-                 LogError(@"%@ = ERROR: %@", command, error);
-                 responseHandler(nil, [NTApiError errorWithNSError:error]);
-                 return ;
-             }
-             
-             NSDictionary *json = nil;
-             
-             if ( [options objectForKey:NTApiOptionRawData] )
-             {
-                 json = [NSDictionary dictionaryWithObject:data forKey:@"rawData"];
-                 LogInfo(@"%@ = rawData[%d bytes]", command, data.length);
-             }
-             
-             else // parse as JSON
-             {
-                 SBJsonParser *parser = [[SBJsonParser alloc] init];
-                 
-                 json = [parser objectWithString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-                 
-                 // Attempt to recover from errors/warnings outputted by PHP...
-                 
-                 if ( !json )
-                 {
-                     NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                     
-                     // if it looks like a PHP error message...
-                     
-                     if ( [text hasPrefix:@"<br/>"] )
-                     {
-                         // Try to find the start of the JSON data...
-                         
-                         NSRange range = [text rangeOfString:@"{"];
-                         
-                         if ( range.location != NSNotFound )
-                         {
-                             NSString *phpMessages = [text substringToIndex:range.location];
-                             text = [text substringFromIndex:range.location];
-                             
-                             LogError(@"Found PHP Messages: %@", phpMessages);
-                             
-                             json = [parser objectWithString:text];
-                             
-                             if ( json )
-                             {
-                                 NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithDictionary:json];
-                                 
-                                 [temp setObject:phpMessages forKey:@"php_messages"];
-                                 
-                                 json = temp;
-                             }
-                         }
-                     }
-                 }
-                 
-                 if ( !json )
-                 {
-                     //LogError(@"%@ = ERROR: Unable to parse JSON Response: %@", command, parser.error);
-                     LogError(@"%@ = ERROR: Unable to parse JSON Response", command);
-                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
-                     LogError(@"%.*s", [data length], [data bytes]);
-                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
-                     
-                     responseHandler(nil, [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"]);
-                     return ;
-                 }
-                 
-                 LogInfo(@"%@ = %@", command, json);
-             }
-             
-             responseHandler(json, nil);
-         }
-         uploadProgressHandler:uploadProgressHandler
-         downloadProgressHandler:downloadProgressHandler];    
-       
-    });
+    requestProcessor.uploadProgressHandler = uploadProgressHandler;
+    requestProcessor.downloadProgressHandler = downloadProgressHandler;
+    
+    // Dispatch the request to the request thread...
+    
+    [requestProcessor performSelector:@selector(start) onThread:[NTApiClient requestThread] withObject:nil waitUntilDone:NO];
 }
 
 

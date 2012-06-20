@@ -250,12 +250,23 @@ static NSOperationQueue     *sResponseQueue = nil;
 }
 
 
+-(BOOL)isMultitaskingSupported
+{
+    UIDevice *device = [UIDevice currentDevice];
+    
+    return ( [device respondsToSelector:@selector(isMultitaskingSupported)] && device.multitaskingSupported );
+}
+
+
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 
     responseHandler:(void (^)(NSDictionary *response, NTApiError *error))responseHandler
 uploadProgressHandler:(void (^)(int bytesSent, int totalBytes))uploadProgressHandler
 downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadProgressHandler;
 {
+    // Note: This code is a little "blocks crazy", might be worth refactoring into a couple methods in the 
+    // RequestProcessor...
+    
     // Process our arguments and create a request...
     
     NSArray *allArgs = [self createArgsForCommand:command withArgs:args];
@@ -265,6 +276,47 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     NSMutableURLRequest *request = [builder createRequest];
     
     NSDictionary *options = builder.options;
+    
+    // BG Tasks support...
+    
+    if ( [self isMultitaskingSupported] )
+    {
+        BOOL responseOnMainThread = [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeMain;
+        
+        UIBackgroundTaskIdentifier taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:
+        ^{
+            // Handle notification if we are running in the background and being killed...
+            
+            NTApiError *error = [NTApiError errorWithCode:NTApiErrorCodeError message:@"Background task timed out"];
+            
+            LogError(@"Background task timed out!");
+            
+            if ( responseOnMainThread )
+            {
+                dispatch_async(dispatch_get_main_queue(), ^
+                { 
+                    responseHandler(nil, error); 
+                });
+               
+            }
+            
+            else
+                responseHandler(nil, error);
+        }];
+        
+//        LogDebug(@"Starting background task: %d", taskId);
+        
+        // Wrap our response so the background task is stopped...
+        
+        void (^temp)(NSDictionary *response, NTApiError *error) = ^(NSDictionary *response, NTApiError *error)
+        {
+            responseHandler(response, error);
+//            LogDebug(@"Completing background task: %d", taskId);
+            [[UIApplication sharedApplication] endBackgroundTask:taskId];
+        };
+       
+        responseHandler = temp;
+    }
         
     // Create wrappers for any blocks that need to run on the main thread...
     
@@ -336,7 +388,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
         
         [[NTApiClient responseQueue] addOperationWithBlock:^
         {
-            LogInfo(@"Processing Response");
+//            LogInfo(@"Processing Response");
             
             if ( error != nil )
             {

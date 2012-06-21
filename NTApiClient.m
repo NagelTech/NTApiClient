@@ -186,8 +186,6 @@ static NSOperationQueue     *sResponseQueue = nil;
                               
 +(void)requestThreadMain
 {
-    LLog(@"Starting Request Thread");
-
     // First, we need to prepare our run loop...
     
     sRequestRunLoop = [NSRunLoop currentRunLoop];
@@ -198,8 +196,6 @@ static NSOperationQueue     *sResponseQueue = nil;
     [sRequestRunLoop run];
     
     // This will continue running until mPort is removed from the Run Loop.
-    
-    LLog(@"Exiting Request Thread");
     
     @synchronized(self)
     {

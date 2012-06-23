@@ -8,6 +8,14 @@
 #import "NTApiRequestProcessor.h"
 
 
+// ARC is required
+
+#if !__has_feature(objc_arc)
+#   error ARC is required for NTApiClient
+#endif
+
+
+
 @interface NTApiRequestProcessor () <NSURLConnectionDelegate>
 {
     NSURLRequest *mRequest;

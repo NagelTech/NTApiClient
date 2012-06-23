@@ -10,6 +10,12 @@
 #import "NTApiError.h"
 #import "NTApiArg.h"
 
+// ARC is required
+
+#if !__has_feature(objc_arc)
+#   error ARC is required for NTApiClient
+#endif
+
 
 @interface NTApiRequestBuilder () // private
 

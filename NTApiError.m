@@ -7,6 +7,13 @@
 
 #import "NTApiError.h"
 
+// ARC is required
+
+#if !__has_feature(objc_arc)
+#   error ARC is required for NTApiClient
+#endif
+
+
 
 const int NTApiErrorCodeNSError = -1;
 const int NTApiErrorCodeInvalidJson = -2;

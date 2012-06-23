@@ -16,6 +16,7 @@
 
 
 @protocol NTApiClientDefaultProvider;
+@class NTApiRequestProcessor;
 
 
 @interface NTApiClient : NSObject
@@ -27,6 +28,10 @@
 +(id)getDefault:(NSString *)key;
 
 +(Reachability *)reachability;
+
+
++(void)networkRequestStarted:(NSURLRequest *)request options:(NSDictionary *)options;               // overridable
++(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options processor:(NTApiRequestProcessor *)processor;
 
 
 -(id)init;

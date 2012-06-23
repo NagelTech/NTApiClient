@@ -213,7 +213,18 @@ static NSOperationQueue     *sResponseQueue = nil;
         sRequestThread = nil;   // will cause 
     }
 }
-                              
+    
+
++(void)networkRequestStarted:(NSURLRequest *)request options:(NSDictionary *)options
+{
+    // override to do global things like start/stop network activity
+}
+
+
++(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options processor:(NTApiRequestProcessor *)processor
+{
+    // override to do global things like start/stop network activity
+}
 
 
 @synthesize baseUrl = mBaseUrl;
@@ -383,20 +394,26 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
         LogDebug(@"< < < < < < < < < < < < < < < < < < < < <");
     }
     
+    [[self class] networkRequestStarted:request options:options];
+    
      NTApiRequestProcessor *requestProcessor = [[NTApiRequestProcessor alloc] initWithURLRequest:request];
     
-    requestProcessor.responseHandler = ^(NSData *data, NSURLResponse *response,  NSError *error)
+    requestProcessor.responseHandler = ^(NTApiRequestProcessor *processor)
     {
+        [[self class] networkRequestCompleted:request options:options processor:processor];
+        
         // Enqueue our response processing...
         
         [[NTApiClient responseQueue] addOperationWithBlock:^
         {
+            int elapsedMS = (processor.startTime && processor.endTime) ? (int)([processor.endTime timeIntervalSinceDate:processor.startTime] * 1000.0) : -1;
+            
 //            LogInfo(@"Processing Response");
             
-            if ( error != nil )
+            if ( processor.error != nil )
             {
-                LogError(@"%@ = ERROR: %@", command, error);
-                responseHandler(nil, [NTApiError errorWithNSError:error]);                
+                LogError(@"%@ = (%dms) ERROR: %@", command, elapsedMS, processor.error);
+                responseHandler(nil, [NTApiError errorWithNSError:processor.error]);                
                 return ;
             }
             
@@ -404,21 +421,21 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
             
             if ( [options objectForKey:NTApiOptionRawData] )
             {
-                json = [NSDictionary dictionaryWithObject:data forKey:@"rawData"];
-                LogInfo(@"%@ = rawData[%d bytes]", command, data.length);
+                json = [NSDictionary dictionaryWithObject:processor.data forKey:@"rawData"];
+                LogInfo(@"%@ = (%dms) rawData[%d bytes]", command, elapsedMS, processor.data.length);
             }
             
             else // parse as JSON
             {
                 SBJsonParser *parser = [[SBJsonParser alloc] init];
                 
-                json = [parser objectWithString:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+                json = [parser objectWithString:[[NSString alloc] initWithData:processor.data encoding:NSUTF8StringEncoding]];
                 
                 // Attempt to recover from errors/warnings outputted by PHP...
                 
                 if ( !json )
                 {
-                    NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                    NSString *text = [[NSString alloc] initWithData:processor.data encoding:NSUTF8StringEncoding];
                     
                     // if it looks like a PHP error message...
                     
@@ -454,7 +471,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                     //LogError(@"%@ = ERROR: Unable to parse JSON Response: %@", command, parser.error);
                     LogError(@"%@ = ERROR: Unable to parse JSON Response", command);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
-                    LogError(@"%.*s", [data length], [data bytes]);
+                    LogError(@"%.*s", processor.data.length, processor.data.bytes);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
                     
                     responseHandler(nil, [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"]);
@@ -462,7 +479,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                     return ;
                 }
                 
-                LogInfo(@"%@ = %@", command, json);
+                LogInfo(@"%@ = (%dms) %@", command, elapsedMS, json);
             }
 
             // execute the responsehandler on the appropriate thread...

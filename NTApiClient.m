@@ -21,7 +21,7 @@
 // logging system selection
 //#define NTAPI_LOG_NONE
 //#define NTAPI_LOG_INTERNAL
-//#define NTAPI_LOG_LLOG
+//#define NTAPI_LOG_NTLOG
 
 // Log enable/disable
 //#define NTAPI_LOG_DISABLE_DEBUG            // Logs POST data and headers
@@ -29,8 +29,8 @@
 //#define NTAPI_LOG_DISABLE_WARN             // not currently used
 //#define NTAPI_LOG_DISABLE_ERROR            // Logs API errors
 
-#if !defined(NTAPI_LOG_NONE) && !defined(NTAPI_LOG_INTERNAL) && !defined(NTAPI_LOG_LLOG)
-#   warning No Log option is defined (NTAPI_LOG_NONE, NTAPI_LOG_INTERNAL or NTAPI_LOG_LLOG) so default of NTAPI_LOG_INTERNAL will be used
+#if !defined(NTAPI_LOG_NONE) && !defined(NTAPI_LOG_INTERNAL) && !defined(NTAPI_LOG_NTLOG)
+#   warning No Log option is defined (NTAPI_LOG_NONE, NTAPI_LOG_INTERNAL or NTAPI_LOG_NTLOG) so default of NTAPI_LOG_INTERNAL will be used
 #   define NTAPI_LOG_INTERNAL
 #endif
 
@@ -47,12 +47,12 @@
 #   define LogWarn(format, ...)    [self writeLogWithType:NTApiLogTypeWarn andFormat:format, ##__VA_ARGS__]
 #   define LogError(format, ...)   [self writeLogWithType:NTApiLogTypeError andFormat:format, ##__VA_ARGS__]
 
-#elif defined(NTAPI_LOG_LLOG)
-#   import "Logger.h"
-#   define LogDebug(format, ...)   LDebug(format, ##__VA_ARGS__)
-#   define LogInfo(format, ...)    LLog(format, ##__VA_ARGS__)
-#   define LogWarn(format, ...)    LWarn(format, ##__VA_ARGS__)
-#   define LogError(format, ...)   LError(format, ##__VA_ARGS__)
+#elif defined(NTAPI_LOG_NTLOG)
+#   import "NTLog.h"
+#   define LogDebug(format, ...)   NTLogDebug(format, ##__VA_ARGS__)
+#   define LogInfo(format, ...)    NTLog(format, ##__VA_ARGS__)
+#   define LogWarn(format, ...)    NTLogWarn(format, ##__VA_ARGS__)
+#   define LogError(format, ...)   NTLogError(format, ##__VA_ARGS__)
 
 #endif
 

@@ -30,6 +30,7 @@
 +(void)networkRequestStarted:(NSURLRequest *)request options:(NSDictionary *)options;               // overridable
 +(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options processor:(NTApiRequestProcessor *)processor;
 
++(id)parseJsonData:(NSData *)data error:(NSError **)error;              // overridable
 
 -(id)init;
 

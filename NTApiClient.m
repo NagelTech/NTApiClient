@@ -5,8 +5,6 @@
 //  See LICENSE for license details
 //
 
-#import "SBJson.h"
-
 #import "NTApiClient.h"
 #import "NTApiRequestProcessor.h"
 
@@ -77,6 +75,24 @@
 #ifdef NTAPI_LOG_DISABLE_ERROR
 #   undef LogError
 #   define LogError(format, ...)   
+#endif
+
+
+#pragma mark JSON library configuration
+
+// JSON Deserializer selection:
+//#define NTAPI_JSON_CUSTOM     // You may override +parseJsonData:error: to use any parser you like
+//#define NTAPI_JSON_NSJSON     // Use built-in NSJSONSerialization class (iOS 5.0+ only) -- DEFAULT!
+//#define NTAPI_JSON_SBJSON     // Use SBJSON library, you must include it yourself.
+
+#if !defined(NTAPI_JSON_CUSTOM) && !defined(NTAPI_JSON_NSJSON) && !defined(NTAPI_JSON_SBJSON)
+#   warning No JSON library is defined (NTAPI_JSON_CUSTOM, NTAPI_JSON_NSJSON or NTAPI_JSON_SBJSON) so default of NTAPI_JSON_NSJSON will be used
+#   define NTAPI_JSON_NSJSON
+#endif
+
+
+#ifdef NTAPI_JSON_SBJSON
+#   import "SBJson.h"
 #endif
 
 
@@ -213,6 +229,33 @@ static NSOperationQueue     *sResponseQueue = nil;
 {
     // override to do global things like start/stop network activity
 }
+
+
++(id)parseJsonData:(NSData *)data error:(NSError *__autoreleasing *)error
+{
+    
+#if defined(NTAPI_JSON_CUSTOM)
+    
+    @throw [NSException exceptionWithName:@"MustOverride" reason:@"parseJsonData must be overridden" userInfo:nil];
+    
+#elif defined(NTAPI_JSON_NSJSON)        // iOS 5+
+    
+    return [NSJSONSerialization JSONObjectWithData:data options:0 error:error];
+    
+#elif defined(NTAPI_JSON_SBJSON)
+    
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    
+    return [parser objectWithData:data error:&error];
+    
+#else
+    
+#   error NTAPI_JSON_??? not defined
+    
+#endif
+    
+}
+
 
 
 @synthesize baseUrl = mBaseUrl;
@@ -415,15 +458,15 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
             
             else // parse as JSON
             {
-                SBJsonParser *parser = [[SBJsonParser alloc] init];
+                NSError *error = nil;
                 
-                json = [parser objectWithString:[[NSString alloc] initWithData:processor.data encoding:NSUTF8StringEncoding]];
+                json = [self.class parseJsonData:processor.data error:&error];
                 
                 // Attempt to recover from errors/warnings outputted by PHP...
                 
                 if ( !json )
                 {
-                    NSString *text = [[NSString alloc] initWithData:processor.data encoding:NSUTF8StringEncoding];
+                  NSString *text = [[NSString alloc] initWithData:processor.data encoding:NSUTF8StringEncoding];
                     
                     // if it looks like a PHP error message...
                     
@@ -440,7 +483,8 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                             
                             LogError(@"Found PHP Messages: %@", phpMessages);
                             
-                            json = [parser objectWithString:text];
+                            error = nil;
+                            json = [self.class parseJsonData:[text dataUsingEncoding:NSUTF8StringEncoding] error:&error];
                             
                             if ( json )
                             {
@@ -456,8 +500,9 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                 
                 if ( !json )
                 {
-                    //LogError(@"%@ = ERROR: Unable to parse JSON Response: %@", command, parser.error);
                     LogError(@"%@ = ERROR: Unable to parse JSON Response", command);
+                    if ( error )
+                        LogError(@"JSON parser error - %@", error);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
                     LogError(@"%.*s", processor.data.length, processor.data.bytes);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");

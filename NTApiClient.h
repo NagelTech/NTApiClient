@@ -11,7 +11,6 @@
 #import "NTApiError.h"
 #import "NTApiArg.h"
 #import "NTApiRequestBuilder.h"
-#import "Reachability.h"
 
 
 
@@ -26,8 +25,6 @@
 
 +(void)setDefault:(NSString *)key value:(id)value;
 +(id)getDefault:(NSString *)key;
-
-+(Reachability *)reachability;
 
 
 +(void)networkRequestStarted:(NSURLRequest *)request options:(NSDictionary *)options;               // overridable

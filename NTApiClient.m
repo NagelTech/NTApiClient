@@ -96,7 +96,6 @@
 
 
 static NSMutableDictionary  *sDefaults = nil;
-static Reachability         *sReachability = nil;
 
 static NSThread             *sRequestThread = nil;
 static NSRunLoop            *sRequestRunLoop = nil;
@@ -145,17 +144,6 @@ static NSOperationQueue     *sResponseQueue = nil;
         value = nil;
     
     return value;
-}
-
-
-+(Reachability *)reachability
-{
-    if ( !sReachability )
-    {
-        sReachability = [Reachability reachabilityForInternetConnection]; 
-    }
-    
-    return sReachability;
 }
 
 

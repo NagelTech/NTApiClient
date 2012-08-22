@@ -448,6 +448,19 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                 return ;
             }
             
+            if ( processor.httpStatusCode < 299 )
+            {
+                if ( processor.httpStatusCode != 200 )
+                    LogWarn(@"Http Status Code: %d", processor.httpStatusCode);
+            }
+            
+            else // http error
+            {
+                LogError(@"%@ = (%dms) HTTP ERROR: %d", command, elapsedMS, processor.httpStatusCode);
+                responseHandler([NSDictionary dictionaryWithObject:processor.data forKey:@"rawData"], [NTApiError errorWithHttpErrorCode:processor.httpStatusCode]);
+                return ;
+            }
+            
             NSDictionary *json = nil;
             
             if ( [options objectForKey:NTApiOptionRawData] )

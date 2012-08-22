@@ -47,6 +47,7 @@
 @synthesize error = mError;
 @synthesize startTime = mStartTime;
 @synthesize endTime = mEndTime;
+@synthesize httpStatusCode = mHttpStatusCode;
 
 
 -(id)initWithURLRequest:(NSURLRequest *)request
@@ -100,6 +101,13 @@
     mResponse = response;
     mExpectedContentLength = (response.expectedContentLength == NSURLResponseUnknownLength) ? 0 : response.expectedContentLength;
     mData = [NSMutableData dataWithCapacity:mExpectedContentLength];
+    
+    if ( [response isKindOfClass:[NSHTTPURLResponse class]] )
+    {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        
+        mHttpStatusCode = httpResponse.statusCode;
+    }
     
     if ( mDownloadProgressHandler ) // 0% downloaded
         mDownloadProgressHandler(0, mExpectedContentLength);

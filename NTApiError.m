@@ -18,6 +18,7 @@
 const int NTApiErrorCodeNSError = -1;
 const int NTApiErrorCodeInvalidJson = -2;
 const int NTApiErrorCodeError = -3;               // generic error
+const int NTApiErrorCodeHttpError = -4;
 
 
 @implementation NTApiError
@@ -26,6 +27,7 @@ const int NTApiErrorCodeError = -3;               // generic error
 @synthesize errorCode = mErrorCode;
 @synthesize errorMessage = mErrorMessage;
 @synthesize nsError = mNsError;
+@synthesize httpErrorCode = mHttpErrorCode;
 
 
 -(id)initWithCode:(int)code message:(NSString *)message
@@ -47,6 +49,20 @@ const int NTApiErrorCodeError = -3;               // generic error
         self.errorCode = NTApiErrorCodeNSError;
         self.errorMessage = [nsError localizedDescription];
         self.nsError = nsError;
+    }
+    
+    return self;
+}
+
+
+-(id)initWithHttpErrorCode:(int)httpErrorCode
+{
+    if ( (self=[super init]) )
+    {
+        self.errorCode = NTApiErrorCodeHttpError;
+        self.httpErrorCode = httpErrorCode;
+        self.errorMessage = [NSString stringWithFormat:@"Http Error Code %d", httpErrorCode];
+
     }
     
     return self;
@@ -76,6 +92,12 @@ const int NTApiErrorCodeError = -3;               // generic error
 +(NTApiError *)errorWithNSError:(NSError *)nsError
 {
     return [[NTApiError alloc] initWithNSError:nsError];
+}
+
+
++(NTApiError *)errorWithHttpErrorCode:(int)httpErrorCode
+{
+    return [[NTApiError alloc] initWithHttpErrorCode:httpErrorCode];
 }
 
 

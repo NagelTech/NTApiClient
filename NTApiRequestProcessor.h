@@ -21,6 +21,7 @@
 @property (readonly, nonatomic)           NSError        *error;
 @property (readonly, nonatomic)           NSDate         *startTime;
 @property (readonly, nonatomic)           NSDate         *endTime;
+@property (readonly, nonatomic)           int             httpStatusCode;
 
 
 -(id)initWithURLRequest:(NSURLRequest *)request;

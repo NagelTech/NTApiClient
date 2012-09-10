@@ -443,8 +443,21 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
             
             if ( processor.error != nil )
             {
-                LogError(@"%@ = (%dms) ERROR: %@", command, elapsedMS, processor.error);
-                responseHandler(nil, [NTApiError errorWithNSError:processor.error]);                
+                NTApiError *apiError = [NTApiError errorWithNSError:processor.error];
+
+                if ( processor.error.code == -1009 || processor.error.code == -1004 )    // Yep, magic number.  I bet there's a constant somewhere
+                {
+                    LogError(@"%@ = (%dms) OFFLINE: %@", command, elapsedMS, processor.error);
+                    
+                    apiError.errorCode = NTApiErrorCodeNoInternet;      // fix up the error code to be something we easier to figure out ;)
+                    
+                }
+                else
+                {
+                    LogError(@"%@ = (%dms) ERROR: %@", command, elapsedMS, processor.error);
+                }
+                responseHandler(nil, apiError);
+
                 return ;
             }
             

@@ -19,6 +19,7 @@ const int NTApiErrorCodeNSError = -1;
 const int NTApiErrorCodeInvalidJson = -2;
 const int NTApiErrorCodeError = -3;               // generic error
 const int NTApiErrorCodeHttpError = -4;
+const int NTApiErrorCodeNoInternet = -5;
 
 
 @implementation NTApiError

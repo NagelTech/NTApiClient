@@ -15,6 +15,7 @@ extern const int NTApiErrorCodeNSError;
 extern const int NTApiErrorCodeInvalidJson;
 extern const int NTApiErrorCodeError;               // generic error
 extern const int NTApiErrorCodeHttpError;
+extern const int NTApiErrorCodeNoInternet;
 
 @interface NTApiError : NSObject
 

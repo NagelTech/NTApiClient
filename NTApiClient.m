@@ -439,11 +439,13 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
         {
             int elapsedMS = (processor.startTime && processor.endTime) ? (int)([processor.endTime timeIntervalSinceDate:processor.startTime] * 1000.0) : -1;
             
+            NTApiError *apiError = nil;
+            
 //            LogInfo(@"Processing Response");
             
             if ( processor.error != nil )
             {
-                NTApiError *apiError = [NTApiError errorWithNSError:processor.error];
+                apiError = [NTApiError errorWithNSError:processor.error];
 
                 if ( processor.error.code == -1009 || processor.error.code == -1004 )    // Yep, magic number.  I bet there's a constant somewhere
                 {
@@ -469,9 +471,8 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
             
             else // http error
             {
-                LogError(@"%@ = (%dms) HTTP ERROR: %d", command, elapsedMS, processor.httpStatusCode);
-                responseHandler([NSDictionary dictionaryWithObject:processor.data forKey:@"rawData"], [NTApiError errorWithHttpErrorCode:processor.httpStatusCode]);
-                return ;
+                LogError(@"Http Error Code: %d", processor.httpStatusCode);
+                apiError = [NTApiError errorWithHttpErrorCode:processor.httpStatusCode];
             }
             
             NSDictionary *json = nil;
@@ -479,7 +480,11 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
             if ( [options objectForKey:NTApiOptionRawData] )
             {
                 json = [NSDictionary dictionaryWithObject:processor.data forKey:@"rawData"];
-                LogInfo(@"%@ = (%dms) rawData[%d bytes]", command, elapsedMS, processor.data.length);
+                
+                if ( apiError )
+                    LogError(@"%@ = (%dms) ERROR %@, rawData[%d bytes]", command, elapsedMS, apiError, processor.data.length);
+                else
+                    LogInfo(@"%@ = (%dms) rawData[%d bytes]", command, elapsedMS, processor.data.length);
             }
             
             else // parse as JSON
@@ -538,9 +543,12 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                     return ;
                 }
                 
-                LogInfo(@"%@ = (%dms) %@", command, elapsedMS, json);
+                if ( apiError )
+                    LogInfo(@"%@ = (%dms) ERROR %@, %@", command, elapsedMS, apiError, json);
+                else
+                    LogInfo(@"%@ = (%dms) %@", command, elapsedMS, json);
             }
-
+            
             // execute the responsehandler on the appropriate thread...
             
             responseHandler(json, nil);

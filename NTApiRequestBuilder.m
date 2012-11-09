@@ -276,7 +276,7 @@ static char NTBase64EncodingTable[64] = {
     if ( ![self initializeMultipart] )
         return NO;
     
-    [self.multipartData appendFormat:@"Content-Disposition: name=\"%@\"; attachment; filename=\"%@.%@\"\r\n", name, name, (extension) ? extension : @"bin"];
+    [self.multipartData appendFormat:@"Content-Disposition: form-data; name=\"%@\"; attachment; filename=\"%@.%@\"\r\n", name, name, (extension) ? extension : @"bin"];
     
     [self.multipartData appendFormat:@"\r\n"];
     [self.multipartData appendData:data];

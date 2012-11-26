@@ -10,8 +10,8 @@
 #import "NTApiConst.h"
 #import "NTApiError.h"
 #import "NTApiArg.h"
+#import "NTApiResponse.h"
 #import "NTApiRequestBuilder.h"
-
 
 
 @protocol NTApiClientDefaultProvider;
@@ -28,7 +28,7 @@
 
 
 +(void)networkRequestStarted:(NSURLRequest *)request options:(NSDictionary *)options;               // overridable
-+(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options processor:(NTApiRequestProcessor *)processor;
++(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options response:(NTApiResponse *)response;
 
 +(id)parseJsonData:(NSData *)data error:(NSError **)error;              // overridable
 
@@ -39,13 +39,13 @@
 
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 
-    responseHandler:(void (^)(NSDictionary *response, NTApiError *error))responseHandler 
+    responseHandler:(void (^)(NTApiResponse *response))responseHandler
 uploadProgressHandler:(void (^)(int bytesSent, int totalBytes))uploadProgressHandler
 downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadProgressHandler;
 
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 
-    responseHandler:(void (^)(NSDictionary *response, NTApiError *error))responseHandler;
+    responseHandler:(void (^)(NTApiResponse *response))responseHandler;
 
 
 @end

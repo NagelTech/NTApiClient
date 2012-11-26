@@ -225,7 +225,7 @@ static NSOperationQueue     *sResponseQueue = nil;
 }
 
 
-+(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options processor:(NTApiRequestProcessor *)processor
++(void)networkRequestCompleted:(NSURLRequest *)request options:(NSDictionary *)options response:(NTApiResponse *)response
 {
     // override to do global things like start/stop network activity
 }
@@ -305,7 +305,7 @@ static NSOperationQueue     *sResponseQueue = nil;
 
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 
-    responseHandler:(void (^)(NSDictionary *response, NTApiError *error))responseHandler
+    responseHandler:(void (^)(NTApiResponse *response))responseHandler
 uploadProgressHandler:(void (^)(int bytesSent, int totalBytes))uploadProgressHandler
 downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadProgressHandler;
 {
@@ -340,22 +340,22 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
             {
                 dispatch_async(dispatch_get_main_queue(), ^
                 { 
-                    responseHandler(nil, error); 
+                    responseHandler([NTApiResponse responseWithError:error]);
                 });
                
             }
             
             else
-                responseHandler(nil, error);
+                responseHandler([NTApiResponse responseWithError:error]);
         }];
         
 //        LogDebug(@"Starting background task: %d", taskId);
         
         // Wrap our response so the background task is stopped...
         
-        void (^temp)(NSDictionary *response, NTApiError *error) = ^(NSDictionary *response, NTApiError *error)
+        void (^temp)(NTApiResponse *response) = ^(NTApiResponse *response)
         {
-            responseHandler(response, error);
+            responseHandler(response);
 //            LogDebug(@"Completing background task: %d", taskId);
             [[UIApplication sharedApplication] endBackgroundTask:taskId];
         };
@@ -367,11 +367,11 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     
     if ( [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeMain )
     {
-        void (^temp)(NSDictionary *response, NTApiError *error) = ^(NSDictionary *response, NTApiError *error)
+        void (^temp)(NTApiResponse *response) = ^(NTApiResponse *response)
         {
             dispatch_async(dispatch_get_main_queue(), ^
             { 
-                responseHandler(response, error); 
+                responseHandler(response);
            });
         };
         
@@ -403,7 +403,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     if ( !request )
     {
         LogError(@"%@ = ERROR: %@", command, builder.error);
-        responseHandler(nil, builder.error);
+        responseHandler([NTApiResponse responseWithError:builder.error]);
 
         return ;
     }
@@ -429,129 +429,96 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     
      NTApiRequestProcessor *requestProcessor = [[NTApiRequestProcessor alloc] initWithURLRequest:request];
     
-    requestProcessor.responseHandler = ^(NTApiRequestProcessor *processor)
+    requestProcessor.responseHandler = ^(NTApiResponse *response)
     {
-        [[self class] networkRequestCompleted:request options:options processor:processor];
+        [[self class] networkRequestCompleted:request options:options response:response];
         
         // Enqueue our response processing...
         
         [[NTApiClient responseQueue] addOperationWithBlock:^
         {
-            int elapsedMS = (processor.startTime && processor.endTime) ? (int)([processor.endTime timeIntervalSinceDate:processor.startTime] * 1000.0) : -1;
-            
-            NTApiError *apiError = nil;
-            
-//            LogInfo(@"Processing Response");
-            
-            if ( processor.error != nil )
+            if ( response.error )
             {
-                apiError = [NTApiError errorWithNSError:processor.error];
+                LogError(@"%@ = (%dms) ERROR: %@", command, response.elapsedMS, response.error);
 
-                if ( processor.error.code == -1009 || processor.error.code == -1004 )    // Yep, magic number.  I bet there's a constant somewhere
-                {
-                    LogError(@"%@ = (%dms) OFFLINE: %@", command, elapsedMS, processor.error);
-                    
-                    apiError.errorCode = NTApiErrorCodeNoInternet;      // fix up the error code to be something we easier to figure out ;)
-                    
-                }
-                else
-                {
-                    LogError(@"%@ = (%dms) ERROR: %@", command, elapsedMS, processor.error);
-                }
-                responseHandler(nil, apiError);
+                responseHandler(response);
 
                 return ;
             }
             
-            if ( processor.httpStatusCode < 299 )
+            if ( response.httpStatusCode < 299 )
             {
-                if ( processor.httpStatusCode != 200 )
-                    LogWarn(@"Http Status Code: %d", processor.httpStatusCode);
+                if ( response.httpStatusCode != 200 )
+                    LogWarn(@"Http Status Code: %d", response.httpStatusCode);
             }
             
             else // http error
             {
-                LogError(@"Http Error Code: %d", processor.httpStatusCode);
-                apiError = [NTApiError errorWithHttpErrorCode:processor.httpStatusCode];
+                LogError(@"Http Error Code: %d", response.httpStatusCode);
+                response.error = [NTApiError errorWithHttpErrorCode:response.httpStatusCode];
             }
-            
-            NSDictionary *json = nil;
-            
+                        
             if ( [options objectForKey:NTApiOptionRawData] )
             {
-                json = [NSDictionary dictionaryWithObject:processor.data forKey:@"rawData"];
-                
-                if ( apiError )
-                    LogError(@"%@ = (%dms) ERROR %@, rawData[%d bytes]", command, elapsedMS, apiError, processor.data.length);
+                if ( response.error )
+                    LogError(@"%@ = (%dms) ERROR %@, rawData[%d bytes]", command, response.elapsedMS, response.error, response.data.length);
                 else
-                    LogInfo(@"%@ = (%dms) rawData[%d bytes]", command, elapsedMS, processor.data.length);
+                    LogInfo(@"%@ = (%dms) rawData[%d bytes]", command, response.elapsedMS, response.data.length);
             }
             
             else // parse as JSON
             {
                 NSError *error = nil;
                 
-                json = [self.class parseJsonData:processor.data error:&error];
+                response.json = [self.class parseJsonData:response.data error:&error];
                 
-                // Attempt to recover from errors/warnings outputted by PHP...
+                // Attempt to recover from errors/warnings outputted by server...
                 
-                if ( !json )
+                if ( !response.json )
                 {
-                  NSString *text = [[NSString alloc] initWithData:processor.data encoding:NSUTF8StringEncoding];
+                  NSString *text = [[NSString alloc] initWithData:response.data encoding:NSUTF8StringEncoding];
                     
-                    // if it looks like a PHP error message...
+                    // Try to find the start of the JSON data...
                     
-                    if ( [text hasPrefix:@"<br/>"] )
+                    NSRange range = [text rangeOfString:@"{"];
+                    
+                    if ( range.location != NSNotFound )
                     {
-                        // Try to find the start of the JSON data...
+                        NSString *prefixText = [text substringToIndex:range.location];
+                        text = [text substringFromIndex:range.location];
                         
-                        NSRange range = [text rangeOfString:@"{"];
+                        LogWarn(@"Prefix text found: %@", prefixText);
                         
-                        if ( range.location != NSNotFound )
-                        {
-                            NSString *phpMessages = [text substringToIndex:range.location];
-                            text = [text substringFromIndex:range.location];
-                            
-                            LogError(@"Found PHP Messages: %@", phpMessages);
-                            
-                            error = nil;
-                            json = [self.class parseJsonData:[text dataUsingEncoding:NSUTF8StringEncoding] error:&error];
-                            
-                            if ( json )
-                            {
-                                NSMutableDictionary *temp = [NSMutableDictionary dictionaryWithDictionary:json];
-                                
-                                [temp setObject:phpMessages forKey:@"php_messages"];
-                                
-                                json = temp;
-                            }
-                        }
+                        response.prefixText = prefixText;
+                        
+                        error = nil;
+                        response.json = [self.class parseJsonData:[text dataUsingEncoding:NSUTF8StringEncoding] error:&error];
                     }
                 }
                 
-                if ( !json )
+                if ( !response.json )
                 {
                     LogError(@"%@ = ERROR: Unable to parse JSON Response", command);
                     if ( error )
                         LogError(@"JSON parser error - %@", error);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
-                    LogError(@"%.*s", processor.data.length, processor.data.bytes);
+                    LogError(@"%.*s", response.data.length, response.data.bytes);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
                     
-                    responseHandler(nil, [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"]);
+                    response.error = [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"];
                     
                     return ;
                 }
                 
-                if ( apiError )
-                    LogInfo(@"%@ = (%dms) ERROR %@, %@", command, elapsedMS, apiError, json);
+                if ( response.error )
+                    LogInfo(@"%@ = (%dms) ERROR %@, %@", command, response.elapsedMS, response.error, response.json);
                 else
-                    LogInfo(@"%@ = (%dms) %@", command, elapsedMS, json);
+                    LogInfo(@"%@ = (%dms) %@", command, response.elapsedMS, response.json);
             }
             
             // execute the responsehandler on the appropriate thread...
             
-            responseHandler(json, nil);
+            responseHandler(response);
         }];
         
     };
@@ -567,7 +534,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
 
 -(void)beginRequest:(NSString *)command 
                args:(NSArray *)args 
-    responseHandler:(void (^)(NSDictionary *, NTApiError *))responseHandler
+    responseHandler:(void (^)(NTApiResponse *response))responseHandler
 {
     [self beginRequest:command args:args responseHandler:responseHandler uploadProgressHandler:nil downloadProgressHandler:nil];
 }

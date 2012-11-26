@@ -15,20 +15,15 @@
 #endif
 
 
-
 @interface NTApiRequestProcessor () <NSURLConnectionDelegate>
 {
-    NSURLRequest *mRequest;
-    NSURLResponse *mResponse;
-    NSMutableData *mData;
-    NSURLConnection *mConnection;
-    NSError *mError;
-    int mExpectedContentLength;
-    BOOL mShouldCacheResponse;
-    
-    NSDate   *mStartTime;           // when we start sending the request
-    NSDate   *mEndTime;             // when we have got the entire response
+    NSURLConnection *_connection;
+    int _expectedContentLength;
+    BOOL _shouldCacheResponse;
 }
+
+
+@property (readonly,nonatomic) NSMutableData *data;
 
 
 @end
@@ -37,24 +32,19 @@
 @implementation NTApiRequestProcessor
 
 
-@synthesize responseHandler = mResponseHandler;
-@synthesize uploadProgressHandler = mUploadProgressHandler;
-@synthesize downloadProgressHandler = mDownloadProgressHandler;
+-(NSMutableData *)data
+{
+    return (NSMutableData *)_response.data;
+}
 
-@synthesize request = mRequest;
-@synthesize response = mResponse;
-@synthesize data = mData;
-@synthesize error = mError;
-@synthesize startTime = mStartTime;
-@synthesize endTime = mEndTime;
-@synthesize httpStatusCode = mHttpStatusCode;
 
 
 -(id)initWithURLRequest:(NSURLRequest *)request
 {
     if ( (self=[super init]) )
     {
-        mRequest = request;
+        _request = request;
+        _response = [[NTApiResponse alloc] init];
     }
     
     return self;
@@ -65,11 +55,11 @@
 {
 //    LLog(@"Starting request: %@", mRequest.URL);
     
-    mStartTime = [NSDate date];
+    _response.startTime = [NSDate date];
     
-    mConnection = [[NSURLConnection alloc] initWithRequest:mRequest delegate:self startImmediately:NO];
+    _connection = [[NSURLConnection alloc] initWithRequest:_request delegate:self startImmediately:NO];
 
-    [mConnection start];
+    [_connection start];
 }
 
 
@@ -77,7 +67,7 @@
 {
     // todo: make sure we are running, etc.
     
-    [mConnection cancel];
+    [_connection cancel];
 }
 
 
@@ -90,27 +80,27 @@
     
     //    LDebug(@"didSendBodyData %d/%d bytes", totalBytesWritten, totalBytesExpectedToWrite);
     
-    if ( mUploadProgressHandler )
-        mUploadProgressHandler(totalBytesWritten, totalBytesExpectedToWrite);
+    if ( _uploadProgressHandler )
+        _uploadProgressHandler(totalBytesWritten, totalBytesExpectedToWrite);
 }
 
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 //    LDebug(@"didReceiveResponse");
-    mResponse = response;
-    mExpectedContentLength = (response.expectedContentLength == NSURLResponseUnknownLength) ? 0 : response.expectedContentLength;
-    mData = [NSMutableData dataWithCapacity:mExpectedContentLength];
+    _expectedContentLength = (response.expectedContentLength == NSURLResponseUnknownLength) ? 0 : response.expectedContentLength;
+    _response.data = [NSMutableData dataWithCapacity:_expectedContentLength];
+
     
     if ( [response isKindOfClass:[NSHTTPURLResponse class]] )
     {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         
-        mHttpStatusCode = httpResponse.statusCode;
+        _response.httpStatusCode = httpResponse.statusCode;
     }
     
-    if ( mDownloadProgressHandler ) // 0% downloaded
-        mDownloadProgressHandler(0, mExpectedContentLength);
+    if ( _downloadProgressHandler ) // 0% downloaded
+        _downloadProgressHandler(0, _expectedContentLength);
 }
 
 
@@ -118,11 +108,15 @@
 {
 //    LError(@"connectionDidFailWithError: %@", error);
     
-    mEndTime = [NSDate date];
-    mError = error;
+    _response.endTime = [NSDate date];
+
+    _response.error = [NTApiError errorWithNSError:error];
     
-    if ( mResponseHandler )
-        mResponseHandler(self);
+    if ( error.code == -1009 || error.code == -1004 )    // Yep, magic number.  I bet there's a constant somewhere
+        _response.error.errorCode = NTApiErrorCodeNoInternet;
+    
+    if ( _responseHandler )
+        _responseHandler(_response);
 }
 
 
@@ -130,31 +124,31 @@
 {
     //    LLog(@"connectionDidFinishLoading");
     
-    mEndTime = [NSDate date];
+    _response.endTime = [NSDate date];
     
     // If we have a download progress handler and we didn't end up with the size we thought we would have, go ahead and 
     // do a final update...
     
-    if ( mDownloadProgressHandler && mData.length != mExpectedContentLength )
+    if ( _downloadProgressHandler && self.data.length != _expectedContentLength )
     {
-        mDownloadProgressHandler(mData.length, mData.length);
+        _downloadProgressHandler(self.data.length, self.data.length);
     }
     
-    mError = nil;
+    _response.error = nil;
     
-    if ( mResponseHandler )
-        mResponseHandler(self);
+    if ( _responseHandler )
+        _responseHandler(_response);
 }
 
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    [mData appendData:data];
+    [self.data appendData:data];
     
 //    LDebug(@"didReceiveData: (received %d) %d/%d bytes", data.length, mData.length, mExpectedContentLength);
 
-    if ( mDownloadProgressHandler )
-        mDownloadProgressHandler(mData.length, mExpectedContentLength);
+    if ( _downloadProgressHandler )
+        _downloadProgressHandler(self.data.length, _expectedContentLength);
 }
 
 
@@ -162,7 +156,7 @@
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
                   willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
-    return mShouldCacheResponse ? cachedResponse : nil;
+    return _shouldCacheResponse ? cachedResponse : nil;
 }
 
 

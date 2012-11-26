@@ -97,6 +97,7 @@
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         
         _response.httpStatusCode = httpResponse.statusCode;
+        _response.headers = httpResponse.allHeaderFields;
     }
     
     if ( _downloadProgressHandler ) // 0% downloaded

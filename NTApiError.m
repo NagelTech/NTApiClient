@@ -15,11 +15,11 @@
 
 
 
-const int NTApiErrorCodeNSError = -1;
-const int NTApiErrorCodeInvalidJson = -2;
-const int NTApiErrorCodeError = -3;               // generic error
-const int NTApiErrorCodeHttpError = -4;
-const int NTApiErrorCodeNoInternet = -5;
+NSString *NTApiErrorCodeNSError = @"NTApiErrorCodeNSError";
+NSString *NTApiErrorCodeInvalidJson = @"NTApiErrorCodeInvalidJson";
+NSString *NTApiErrorCodeError = @"NTApiErrorCodeError";               // generic error
+NSString *NTApiErrorCodeHttpError = @"NTApiErrorCodeHttpError";
+NSString *NTApiErrorCodeNoInternet = @"NTApiErrorCodeNoInternet";
 
 
 @implementation NTApiError
@@ -31,11 +31,64 @@ const int NTApiErrorCodeNoInternet = -5;
 @synthesize httpErrorCode = mHttpErrorCode;
 
 
--(id)initWithCode:(int)code message:(NSString *)message
+#pragma mark - errorCode management
+
+
+static NSMutableSet *sAllErrorCodes = nil;
+
+
++(void)initErrorCodes
+{
+    [self addErrorCode:NTApiErrorCodeNSError];
+    [self addErrorCode:NTApiErrorCodeInvalidJson];
+    [self addErrorCode:NTApiErrorCodeError];
+    [self addErrorCode:NTApiErrorCodeHttpError];
+    [self addErrorCode:NTApiErrorCodeNoInternet];
+}
+
+
++(NSSet *)allErrorCodes
+{
+    if ( !sAllErrorCodes )
+    {
+        sAllErrorCodes = [NSMutableSet new];
+
+        [self initErrorCodes];
+        
+    }
+    
+    return sAllErrorCodes;
+}
+
+
++(void)addErrorCode:(NSString *)errorCode
+{
+    if ( !sAllErrorCodes )
+        sAllErrorCodes = [NSMutableSet new];
+    
+    [sAllErrorCodes addObject:errorCode];
+}
+
+
++(NSString *)mapErorCode:(NSString *)text
+{
+    if ( !text )
+        return nil;
+    
+    NSString *value = [[self allErrorCodes] member:text];
+    
+    return (value) ? value : text;
+}
+
+
+#pragma mark - lifecycle
+
+
+-(id)initWithCode:(NSString *)code message:(NSString *)message
 {
     if ( (self=[super init]) )
     {
-        self.errorCode = code;
+        self.errorCode = [NTApiError mapErorCode:code];
         self.errorMessage = message;
     }
     
@@ -70,13 +123,13 @@ const int NTApiErrorCodeNoInternet = -5;
 }
 
 
-+(NTApiError *)errorWithCode:(int)code message:(NSString *)message
++(NTApiError *)errorWithCode:(NSString *)code message:(NSString *)message
 {
     return [[NTApiError alloc] initWithCode:code message:message];
 }
 
 
-+(NTApiError *)errorWithCode:(int)code format:(NSString *)format, ...
++(NTApiError *)errorWithCode:(NSString *)code format:(NSString *)format, ...
 {
     va_list args;
     va_start(args, format);

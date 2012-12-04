@@ -498,7 +498,6 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                 
                 if ( !response.json )
                 {
-                    LogError(@"%@ = ERROR: Unable to parse JSON Response", command);
                     if ( error )
                         LogError(@"JSON parser error - %@", error);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
@@ -506,8 +505,6 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
                     
                     response.error = [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"];
-                    
-                    return ;
                 }
                 
                 if ( response.error )

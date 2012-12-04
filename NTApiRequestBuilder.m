@@ -255,7 +255,7 @@ static char NTBase64EncodingTable[64] = {
     if ( ![self initializeMultipart] )
         return NO;
     
-    [self.multipartData appendFormat:@"Content-Disposition: form/data; name=\"%@\"\r\n", name];
+    [self.multipartData appendFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n", name];
     
     [self.multipartData appendFormat:@"\r\n"];
     [self.multipartData appendFormat:@"%@", value];

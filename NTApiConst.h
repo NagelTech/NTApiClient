@@ -9,6 +9,7 @@
 
 
 extern NSString *NTApiOptionRawData;
+extern NSString *NTApiOptionIgnoreHTTPErrorCodes;
 extern NSString *NTApiOptionResponseHandlerThreadType;
 extern NSString *NTApiOptionUploadHandlerThreadType;
 extern NSString *NTApiOptionDownloadHandlerThreadType;

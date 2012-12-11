@@ -9,6 +9,7 @@
 
 
 NSString *NTApiOptionRawData = @"NTApiOptionRawData";
+NSString *NTApiOptionIgnoreHTTPErrorCodes = @"NTApiOptionIgnoreHTTPErrorCodes";
 NSString *NTApiOptionResponseHandlerThreadType = @"NTApiOptionResponseHandlerThreadType";
 NSString *NTApiOptionUploadHandlerThreadType = @"NTApiOptionUploadHandlerThreadType";
 NSString *NTApiOptionDownloadHandlerThreadType = @"NTApiOptionDownloadHandlerThreadType";

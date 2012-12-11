@@ -100,6 +100,7 @@
 +(NTApiOptionArg *)optionWithName:(NSString *)name;
 
 +(NTApiOptionArg *)optionRawData;
++(NTApiOptionArg *)optionIgnoreHTTPErrorCodes;
 +(NTApiOptionArg *)optionRequestHandlerThread:(NTApiThreadType)threadType;
 +(NTApiOptionArg *)optionUploadHandlerThread:(NTApiThreadType)threadType;
 +(NTApiOptionArg *)optionDownloadHandlerThread:(NTApiThreadType)threadType;

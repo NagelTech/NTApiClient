@@ -452,7 +452,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                     LogWarn(@"Http Status Code: %d", response.httpStatusCode);
             }
             
-            else // http error
+            else if ( ![options objectForKey:NTApiOptionIgnoreHTTPErrorCodes]) // http error
             {
                 LogError(@"Http Error Code: %d", response.httpStatusCode);
                 response.error = [NTApiError errorWithHttpErrorCode:response.httpStatusCode];

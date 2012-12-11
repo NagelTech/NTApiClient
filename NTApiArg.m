@@ -290,6 +290,11 @@
     return [NTApiOptionArg optionWithName:NTApiOptionRawData];
 }
 
++(NTApiOptionArg *)optionIgnoreHTTPErrorCodes
+{
+    return [NTApiOptionArg optionWithName:NTApiOptionIgnoreHTTPErrorCodes];
+}
+
 
 +(NTApiOptionArg *)optionRequestHandlerThread:(NTApiThreadType)threadType
 {

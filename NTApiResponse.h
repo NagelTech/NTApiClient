@@ -14,16 +14,16 @@
 
 @interface NTApiResponse : NSObject
 
-@property (readwrite, nonatomic)            NSData          *data;
-@property (readwrite, nonatomic)            NSDictionary    *json;
-@property (readwrite, nonatomic)            NTApiError      *error;
-@property (readwrite, nonatomic)            NSDate          *startTime;
-@property (readwrite, nonatomic)            NSDate          *endTime;
-@property (readwrite, nonatomic)            int              httpStatusCode;
-@property (readwrite, nonatomic)            NSDictionary    *headers;
-@property (readwrite, nonatomic)            NSString        *prefixText;
+@property (readwrite, nonatomic, retain)            NSData          *data;
+@property (readwrite, nonatomic, retain)            NSDictionary    *json;
+@property (readwrite, nonatomic, retain)            NTApiError      *error;
+@property (readwrite, nonatomic, retain)            NSDate          *startTime;
+@property (readwrite, nonatomic, retain)            NSDate          *endTime;
+@property (readwrite, nonatomic, assign)            int              httpStatusCode;
+@property (readwrite, nonatomic, retain)            NSDictionary    *headers;
+@property (readwrite, nonatomic, retain)            NSString        *prefixText;
 
-@property (readonly,nonatomic)              int              elapsedMS;
+@property (readonly,nonatomic, assign)              int              elapsedMS;
 
 +(NTApiResponse *)responseWithError:(NTApiError *)error;
 

@@ -20,6 +20,7 @@ extern NSString *NTApiHeaderAuthorization;
 typedef NSString *NTApiThreadType;
 extern NTApiThreadType NTApiThreadTypeMain;
 extern NTApiThreadType NTApiThreadTypeBackground;
+extern NTApiThreadType NTApiThreadTypeCurrent;
 
 typedef NSString *NTApiLogType;
 extern NTApiLogType NTApiLogTypeDebug;

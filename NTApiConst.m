@@ -19,6 +19,7 @@ NSString *NTApiHeaderAuthorization = @"Authorization";
 
 NTApiThreadType NTApiThreadTypeMain = @"NTApiThreadTypeMain";
 NTApiThreadType NTApiThreadTypeBackground = @"NTApiThreadTypeBackground";
+NTApiThreadType NTApiThreadTypeCurrent = @"NTApiThreadTypeCurrent";
 
 NTApiLogType NTApiLogTypeDebug = @"Debug";
 NTApiLogType NTApiLogTypeInfo = @"Info";

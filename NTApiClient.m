@@ -7,6 +7,7 @@
 
 #import "NTApiClient.h"
 #import "NTApiRequestProcessor.h"
+#import "NSThread+MCSMAdditions.h"
 
 
 // ARC is required
@@ -313,7 +314,9 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     // RequestProcessor...
     
     // Process our arguments and create a request...
-    
+  
+    __weak NSThread *currentThread = [NSThread currentThread];
+  
     NSArray *allArgs = [self createArgsForCommand:command withArgs:args];
     
     NTApiRequestBuilder *builder = [[NTApiRequestBuilder alloc] initWithArgs:allArgs];
@@ -326,6 +329,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     
     if ( [self isMultitaskingSupported] )
     {
+        BOOL responseOnCurrentThread = [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeCurrent;
         BOOL responseOnMainThread = [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeMain;
         
         UIBackgroundTaskIdentifier taskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:
@@ -344,7 +348,12 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                 });
                
             }
-            
+            else if ( responseOnCurrentThread )
+            {
+                [currentThread MCSM_performBlock:^{
+                    responseHandler([NTApiResponse responseWithError:error]);
+                }];
+            }
             else
                 responseHandler([NTApiResponse responseWithError:error]);
         }];
@@ -376,6 +385,17 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
         };
         
         responseHandler = temp;
+    }
+    else if ( [options objectForKey:NTApiOptionResponseHandlerThreadType] == NTApiThreadTypeCurrent )
+    {
+      void (^temp)(NTApiResponse *response) = ^(NTApiResponse *response)
+      {
+        [currentThread MCSM_performBlock:^{
+          responseHandler(response);
+        }];
+      };
+      
+      responseHandler = temp;
     }
     
     if ( uploadProgressHandler && ([options objectForKey:NTApiOptionUploadHandlerThreadType] == NTApiThreadTypeMain) )

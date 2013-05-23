@@ -10,12 +10,11 @@
 #import "NTApiConst.h"
 #import "NTApiError.h"
 #import "NTApiArg.h"
+#import "NTApiRequest.h"
 #import "NTApiResponse.h"
-#import "NTApiRequestBuilder.h"
 
 
 @protocol NTApiClientDefaultProvider;
-@class NTApiRequestProcessor;
 
 
 @interface NTApiClient : NSObject
@@ -37,13 +36,13 @@
 -(void)writeLogWithType:(NTApiLogType)logType andFormat:(NSString *)format, ...;
                                             
 
--(void)beginRequest:(NSString *)command 
+-(NTApiRequest *)beginRequest:(NSString *)command
                args:(NSArray *)args 
     responseHandler:(void (^)(NTApiResponse *response))responseHandler
 uploadProgressHandler:(void (^)(int bytesSent, int totalBytes))uploadProgressHandler
 downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadProgressHandler;
 
--(void)beginRequest:(NSString *)command 
+-(NTApiRequest *)beginRequest:(NSString *)command
                args:(NSArray *)args 
     responseHandler:(void (^)(NTApiResponse *response))responseHandler;
 

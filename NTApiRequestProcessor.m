@@ -20,6 +20,7 @@
     NSURLConnection *_connection;
     int _expectedContentLength;
     BOOL _shouldCacheResponse;
+    BOOL _isRunning;
 }
 
 
@@ -60,6 +61,12 @@
     _connection = [[NSURLConnection alloc] initWithRequest:_request delegate:self startImmediately:NO];
 
     [_connection start];
+}
+
+
+-(BOOL)isRunning
+{
+    return (_connection && !_response.endTime) ? YES : NO;
 }
 
 

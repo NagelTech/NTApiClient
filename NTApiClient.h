@@ -19,7 +19,9 @@
 
 @interface NTApiClient : NSObject
 
+
 @property (strong, atomic)  NSString                *baseUrl;
+@property (assign, atomic)  NTApiLogType             logFlags;
 
 
 +(void)setDefault:(NSString *)key value:(id)value;

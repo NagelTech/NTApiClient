@@ -22,9 +22,14 @@ extern NTApiThreadType NTApiThreadTypeMain;
 extern NTApiThreadType NTApiThreadTypeBackground;
 extern NTApiThreadType NTApiThreadTypeCurrent;
 
-typedef NSString *NTApiLogType;
-extern NTApiLogType NTApiLogTypeDebug;
-extern NTApiLogType NTApiLogTypeInfo;
-extern NTApiLogType NTApiLogTypeWarn;
-extern NTApiLogType NTApiLogTypeError;
+typedef enum 
+{
+    NTApiLogTypeDebug = 1<<0,
+    NTApiLogTypeInfo = 1<<1,
+    NTApiLogTypeWarn = 1<<2,
+    NTApiLogTypeError = 1<<3,
+ 
+    NTApiLogTypeNone = 0,
+    NTApiLogTypeAll = 0x0F,
+} NTApiLogType;
 

@@ -21,8 +21,3 @@ NTApiThreadType NTApiThreadTypeMain = @"NTApiThreadTypeMain";
 NTApiThreadType NTApiThreadTypeBackground = @"NTApiThreadTypeBackground";
 NTApiThreadType NTApiThreadTypeCurrent = @"NTApiThreadTypeCurrent";
 
-NTApiLogType NTApiLogTypeDebug = @"Debug";
-NTApiLogType NTApiLogTypeInfo = @"Info";
-NTApiLogType NTApiLogTypeWarn = @"Warn";
-NTApiLogType NTApiLogTypeError = @"Error";
-

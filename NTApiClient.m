@@ -51,10 +51,10 @@
 
 #elif defined(NTAPI_LOG_NTLOG)
 #   import "NTLog.h"
-#   define LogDebug(format, ...)   NTLogDebug(format, ##__VA_ARGS__)
-#   define LogInfo(format, ...)    NTLog(format, ##__VA_ARGS__)
-#   define LogWarn(format, ...)    NTLogWarn(format, ##__VA_ARGS__)
-#   define LogError(format, ...)   NTLogError(format, ##__VA_ARGS__)
+#   define LogDebug(format, ...)   ((self.logFlags & NTApiLogTypeDebug) ? NTLogDebug(format, ##__VA_ARGS__), 0 : 0)
+#   define LogInfo(format, ...)    ((self.logFlags & NTApiLogTypeInfo) ? NTLog(format, ##__VA_ARGS__), 0 : 0)
+#   define LogWarn(format, ...)    ((self.logFlags & NTApiLogTypeWarn) ? NTLogWarn(format, ##__VA_ARGS__), 0 : 0)
+#   define LogError(format, ...)   ((self.logFlags & NTApiLogTypeError) ? NTLogError(format, ##__VA_ARGS__), 0 : 0)
 
 #endif
 
@@ -125,6 +125,9 @@ static NSOperationQueue     *sResponseQueue = nil;
 {
     // override this to provide your own logging...
     
+    if ( (self.logFlags & logType) == 0 )
+        return ;
+    
     va_list args;
     va_start(args, format);
     
@@ -132,10 +135,27 @@ static NSOperationQueue     *sResponseQueue = nil;
     
     va_end(args);
     
-    if ( logType != NTApiLogTypeInfo )
-        NSLog(@"(API) %@: %@", logType, message);
-    else 
-        NSLog(@"(API) %@", message);
+    switch (logType)
+    {
+        case NTApiLogTypeDebug:
+            NSLog(@"(API) Debug: %@", message);
+            break;
+            
+        case NTApiLogTypeInfo:
+            NSLog(@"(API): %@", message);
+            break;
+            
+        case NTApiLogTypeWarn:
+            NSLog(@"(API) Warn: %@", message);
+            break;
+            
+        case NTApiLogTypeError:
+            NSLog(@"(API) Error: %@", message);
+            break;
+            
+        default:
+            break;  //ignore anything we don't understand
+    }
 }
 
 
@@ -268,6 +288,10 @@ static NSOperationQueue     *sResponseQueue = nil;
     if ( (self=[super init]) )
     {
         self.baseUrl = [NTApiClient getDefault:@"baseUrl"];
+        
+        NSNumber *logFlags = [NTApiClient getDefault:@"logFlags"];
+        
+        self.logFlags = (logFlags) ? [logFlags intValue] : NTApiLogTypeAll;
     }
     
     return self;

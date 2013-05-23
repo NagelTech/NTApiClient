@@ -7,11 +7,13 @@
 
 #import <Foundation/Foundation.h>
 
+#import "NTApiRequest.h"
+
 
 @class NTApiResponse;
 
 
-@interface NTApiRequestProcessor : NSObject
+@interface NTApiRequestProcessor : NTApiRequest
 
 
 @property (copy, nonatomic, readwrite)     void (^responseHandler)(NTApiResponse *response);
@@ -23,6 +25,8 @@
 
 
 -(id)initWithURLRequest:(NSURLRequest *)request;
+
+-(BOOL)isRunning;
 
 -(void)start;
 -(void)cancel;

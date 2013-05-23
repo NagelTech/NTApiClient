@@ -6,6 +6,7 @@
 //
 
 #import "NTApiClient.h"
+#import "NTApiRequestBuilder.h"
 #import "NTApiRequestProcessor.h"
 
 
@@ -303,7 +304,7 @@ static NSOperationQueue     *sResponseQueue = nil;
 }
 
 
--(void)beginRequest:(NSString *)command 
+-(NTApiRequest *)beginRequest:(NSString *)command
                args:(NSArray *)args 
     responseHandler:(void (^)(NTApiResponse *response))responseHandler
 uploadProgressHandler:(void (^)(int bytesSent, int totalBytes))uploadProgressHandler
@@ -405,7 +406,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
         LogError(@"%@ = ERROR: %@", command, builder.error);
         responseHandler([NTApiResponse responseWithError:builder.error]);
 
-        return ;
+        return nil;
     }
     
     // output some useful debugging info..
@@ -526,14 +527,16 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     // Dispatch the request to the request thread...
     
     [requestProcessor performSelector:@selector(start) onThread:[NTApiClient requestThread] withObject:nil waitUntilDone:NO];
+    
+    return [[NTApiRequest alloc] initWithRequestProcessor:requestProcessor];
 }
 
 
--(void)beginRequest:(NSString *)command 
+-(NTApiRequest *)beginRequest:(NSString *)command
                args:(NSArray *)args 
     responseHandler:(void (^)(NTApiResponse *response))responseHandler
 {
-    [self beginRequest:command args:args responseHandler:responseHandler uploadProgressHandler:nil downloadProgressHandler:nil];
+    return [self beginRequest:command args:args responseHandler:responseHandler uploadProgressHandler:nil downloadProgressHandler:nil];
 }
 
 

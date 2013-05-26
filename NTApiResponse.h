@@ -22,6 +22,7 @@
 @property (readwrite, nonatomic, assign)            int              httpStatusCode;
 @property (readwrite, nonatomic, retain)            NSDictionary    *headers;
 @property (readwrite, nonatomic, retain)            NSString        *prefixText;
+@property (readwrite, nonatomic, retain)            NSURLRequest    *request;
 
 @property (readonly,nonatomic, assign)              int              elapsedMS;
 

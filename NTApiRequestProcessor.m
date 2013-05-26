@@ -46,6 +46,7 @@
     {
         _request = request;
         _response = [[NTApiResponse alloc] init];
+        _response.request = request;
     }
     
     return self;

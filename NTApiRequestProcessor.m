@@ -7,6 +7,7 @@
 
 #import "NTApiRequestProcessor.h"
 #import "NTApiResponse.h"
+#import "NTApiError.h"
 
 
 // ARC is required

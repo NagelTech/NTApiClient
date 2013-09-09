@@ -32,8 +32,13 @@
 //#define NTAPI_LOG_DISABLE_ERROR            // Logs API errors
 
 #if !defined(NTAPI_LOG_NONE) && !defined(NTAPI_LOG_INTERNAL) && !defined(NTAPI_LOG_NTLOG)
-#   warning No Log option is defined (NTAPI_LOG_NONE, NTAPI_LOG_INTERNAL or NTAPI_LOG_NTLOG) so default of NTAPI_LOG_INTERNAL will be used
-#   define NTAPI_LOG_INTERNAL
+
+#   if defined(COCOAPODS_POD_AVAILABLE_NTLog)
+#       define NTAPI_LOG_NTLOG
+#   else
+#       warning No Log option is defined (NTAPI_LOG_NONE, NTAPI_LOG_INTERNAL or NTAPI_LOG_NTLOG) so default of NTAPI_LOG_INTERNAL will be used
+#       define NTAPI_LOG_INTERNAL
+#   endif
 #endif
 
 

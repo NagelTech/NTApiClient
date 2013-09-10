@@ -98,7 +98,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 //    LDebug(@"didReceiveResponse");
-    _expectedContentLength = (response.expectedContentLength == NSURLResponseUnknownLength) ? 0 : response.expectedContentLength;
+    _expectedContentLength = (response.expectedContentLength == NSURLResponseUnknownLength) ? 0 : (int)response.expectedContentLength;
     _response.data = [NSMutableData dataWithCapacity:_expectedContentLength];
 
     

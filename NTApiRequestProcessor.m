@@ -73,12 +73,21 @@
 }
 
 
--(void)cancel
-{
-    // todo: make sure we are running, etc.
+ -(void)cancel
+ {
+    if ( !_connection )
+        return ;
+     
+     [_connection cancel];
+     _connection = nil;
     
-    [_connection cancel];
-}
+    _response.endTime = [NSDate date];
+    
+    _response.error = [NTApiError errorWithCode:NTApiErrorCodeRequestCancelled message:@"Request Cancelled"];
+    
+    if ( _responseHandler )
+        _responseHandler(_response);
+ }
 
 
 #pragma mark NSURLConnectionDelegate methods
@@ -126,6 +135,8 @@
     if ( error.code == -1009 || error.code == -1004 )    // Yep, magic number.  I bet there's a constant somewhere
         _response.error.errorCode = NTApiErrorCodeNoInternet;
     
+    _connection = nil;
+    
     if ( _responseHandler )
         _responseHandler(_response);
 }
@@ -146,6 +157,8 @@
     }
     
     _response.error = nil;
+    
+    _connection = nil;
     
     if ( _responseHandler )
         _responseHandler(_response);
@@ -169,7 +182,6 @@
 {
     return _shouldCacheResponse ? cachedResponse : nil;
 }
-
 
 
 @end

@@ -20,6 +20,7 @@ NSString *NTApiErrorCodeInvalidJson = @"NTApiErrorCodeInvalidJson";
 NSString *NTApiErrorCodeError = @"NTApiErrorCodeError";               // generic error
 NSString *NTApiErrorCodeHttpError = @"NTApiErrorCodeHttpError";
 NSString *NTApiErrorCodeNoInternet = @"NTApiErrorCodeNoInternet";
+NSString *NTApiErrorCodeRequestCancelled = @"NTApiErrorCodeRequestCancelled";
 
 
 @implementation NTApiError
@@ -44,6 +45,7 @@ static NSMutableSet *sAllErrorCodes = nil;
     [self addErrorCode:NTApiErrorCodeError];
     [self addErrorCode:NTApiErrorCodeHttpError];
     [self addErrorCode:NTApiErrorCodeNoInternet];
+    [self addErrorCode:NTApiErrorCodeRequestCancelled];
 }
 
 

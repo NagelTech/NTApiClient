@@ -16,6 +16,7 @@ extern NSString *NTApiErrorCodeInvalidJson;
 extern NSString *NTApiErrorCodeError;               // generic error
 extern NSString *NTApiErrorCodeHttpError;
 extern NSString *NTApiErrorCodeNoInternet;
+extern NSString *NTApiErrorCodeRequestCancelled;
 
 @interface NTApiError : NSObject
 

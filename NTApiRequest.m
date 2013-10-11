@@ -7,6 +7,7 @@
 //
 
 #import "NTApiRequest.h"
+#import "NTApiClient.h"
 
 #import "NTApiRequestProcessor.h"
 
@@ -15,6 +16,13 @@
 {
     NTApiRequestProcessor __weak *_requestProcessor;
 }
+
+@end
+
+
+@interface NTApiClient ()
+
++(NSThread *)requestThread;     // we need access to this and I'm to lazy to do it the right way ;
 
 @end
 
@@ -51,7 +59,9 @@
     NTApiRequestProcessor *requestProcessor = _requestProcessor;
     
     if ( requestProcessor )
-        [requestProcessor cancel];
+    {
+        [requestProcessor performSelector:@selector(cancel) onThread:[NTApiClient requestThread] withObject:nil waitUntilDone:YES];
+    }
 }
 
 

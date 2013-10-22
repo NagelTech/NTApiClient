@@ -33,7 +33,7 @@
 
 #if !defined(NTAPI_LOG_NONE) && !defined(NTAPI_LOG_INTERNAL) && !defined(NTAPI_LOG_NTLOG)
 
-#   if defined(COCOAPODS_POD_AVAILABLE_NTLog)
+#   if defined(COCOAPODS_POD_AVAILABLE_NTLog_Core)
 #       define NTAPI_LOG_NTLOG
 #   else
 #       warning No Log option is defined (NTAPI_LOG_NONE, NTAPI_LOG_INTERNAL or NTAPI_LOG_NTLOG) so default of NTAPI_LOG_INTERNAL will be used
@@ -92,8 +92,10 @@
 //#define NTAPI_JSON_NSJSON     // Use built-in NSJSONSerialization class (iOS 5.0+ only) -- DEFAULT!
 //#define NTAPI_JSON_SBJSON     // Use SBJSON library, you must include it yourself.
 
-#if !defined(NTAPI_JSON_CUSTOM) && !defined(NTAPI_JSON_NSJSON) && !defined(NTAPI_JSON_SBJSON)
-#   warning No JSON library is defined (NTAPI_JSON_CUSTOM, NTAPI_JSON_NSJSON or NTAPI_JSON_SBJSON) so default of NTAPI_JSON_NSJSON will be used
+#if !defined(NTAPI_JSON_CUSTOM) && !defined(NTAPI_JSON_NSJSON) && !defined(NTAPI_JSON_SBJSON) 
+#   if !defined(COCOAPODS_POD_AVAILABLE_NTApiClient)
+#       warning No JSON library is defined (NTAPI_JSON_CUSTOM, NTAPI_JSON_NSJSON or NTAPI_JSON_SBJSON) so default of NTAPI_JSON_NSJSON will be used
+#   endif
 #   define NTAPI_JSON_NSJSON
 #endif
 

@@ -16,7 +16,15 @@
 #endif
 
 
+// Classes
+
+#import "AppSettings.h"
+
+// NTApiClient
+
 #import "NTApiClient.h"
+
+// OpenWeatherApi
 
 #import "OpenWeatherApiClient.h"
 #import "ModelObject.h"

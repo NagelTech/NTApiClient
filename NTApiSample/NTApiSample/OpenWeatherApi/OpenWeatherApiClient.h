@@ -18,6 +18,7 @@ extern OpenWeatherApiUnit OpenWeatherApiUnitMetric;
 
 @interface OpenWeatherApiClient : NTApiClient
 
+@property (nonatomic) NSString *appid;
 @property (nonatomic) OpenWeatherApiUnit unit;
 
 +(instancetype)apiClient;

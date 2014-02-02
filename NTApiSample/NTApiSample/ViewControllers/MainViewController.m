@@ -9,12 +9,9 @@
 #import "MainViewController.h"
 
 
-#define DEFAULT_CITY_CODES @"5391959,5128581,2643743,1816670,2147714,5309842"        // SF,New York,London,Beijing,Sydney,Yarnell
-
-
 @interface MainViewController () <UITableViewDataSource, UITableViewDelegate>
 {
-    NSArray *_cityCodes;
+    NTApiRequest *_currentRequest;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -26,6 +23,21 @@
 
 
 @implementation MainViewController
+
+
+#pragma mark - Properties
+
+
+-(NSArray *)cityCodes
+{
+    return AppSettings.defaultSettings.cityCodes;
+}
+
+
+-(void)setCityCodes:(NSArray *)cityCodes
+{
+    AppSettings.defaultSettings.cityCodes = cityCodes;
+}
 
 
 #pragma mark - Initialization
@@ -43,57 +55,36 @@
 }
 
 
-#pragma mark - cityCode persistence
-
-
--(NSArray *)cityCodes
-{
-    if ( !_cityCodes )
-    {
-        NSString *csv = [NSUserDefaults.standardUserDefaults valueForKey:@"cityCodes"];
-        
-        if ( !csv )
-        {
-            csv = DEFAULT_CITY_CODES;
-        }
-        
-        _cityCodes = [csv componentsSeparatedByString:@","];
-    }
-    
-    return _cityCodes;
-}
-
-
--(void)setCityCodes:(NSArray *)cityCodes
-{
-    if ( _cityCodes == cityCodes || [_cityCodes isEqualToArray:cityCodes] )
-        return ;
-    
-    NSString *csv = [cityCodes componentsJoinedByString:@","];
-    
-    [NSUserDefaults.standardUserDefaults setValue:csv forKey:@"cityCodes"];
-    [NSUserDefaults.standardUserDefaults synchronize];
-    
-    _cityCodes = cityCodes;
-}
-
-
 #pragma mark - Data Access
 
 
 -(void)beginRefreshWeather
 {
-    [[OpenWeatherApiClient apiClient] beginGetCurrentWeatherWithCityCodes:self.cityCodes responseHandler:^(NSArray *currentWeatherItems, NTApiError *error)
+    // This is an example of a cancellable request. If a second call is made before the first is completed, it is
+    // cancelled...
+    
+    if ( _currentRequest )
+    {
+        NSLog(@"Cancelling getCurrentWeather request");
+        [_currentRequest cancel];
+    }
+
+    _currentRequest = [[OpenWeatherApiClient apiClient] beginGetCurrentWeatherWithCityCodes:self.cityCodes responseHandler:^(NSArray *currentWeatherItems, NTApiError *error)
      {
+         _currentRequest = nil;
+         
          if ( error )
          {
-             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error getting weather"
-                                                                 message:error.errorMessage
-                                                                delegate:nil
-                                                       cancelButtonTitle:@"Ok"
-                                                       otherButtonTitles:nil];
-             
-             [alertView show];
+             if ( error.errorCode != NTApiErrorCodeRequestCancelled ) // don't show error message on cancel
+             {
+                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error getting weather"
+                                                                     message:error.errorMessage
+                                                                    delegate:nil
+                                                           cancelButtonTitle:@"Ok"
+                                                           otherButtonTitles:nil];
+                 
+                 [alertView show];
+             }
              
              return ;
          }
@@ -113,6 +104,8 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"Current Weather";
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(beginRefreshWeather)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCity:)];
 }
 
 
@@ -126,9 +119,30 @@
 {
     [super viewWillAppear:animated];
     
+    // Add a notification so we can refresh when we come back into the foreground...
+    
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(beginRefreshWeather) name:UIApplicationWillEnterForegroundNotification object:nil];
+    
     // Grab the current weather...
     
     [self beginRefreshWeather];
+}
+
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    
+    [super viewWillDisappear:animated];
+}
+
+
+#pragma mark - IBActions
+
+
+-(IBAction)addCity:(id)sender
+{
+    // todo
 }
 
 

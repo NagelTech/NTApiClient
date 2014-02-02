@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F0531FE4189DF50B00527132 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FE2189DF50B00527132 /* MainViewController.m */; };
 		F0531FE5189DF50B00527132 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F0531FE3189DF50B00527132 /* MainViewController.xib */; };
+		F0531FE9189EB1A900527132 /* AppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FE8189EB1A900527132 /* AppSettings.m */; };
 		F0A25A391896FB8B006AB1AF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A381896FB8B006AB1AF /* Foundation.framework */; };
 		F0A25A3B1896FB8B006AB1AF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A3A1896FB8B006AB1AF /* CoreGraphics.framework */; };
 		F0A25A3D1896FB8B006AB1AF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A3C1896FB8B006AB1AF /* UIKit.framework */; };
@@ -52,6 +53,8 @@
 		F0531FE1189DF50B00527132 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		F0531FE2189DF50B00527132 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		F0531FE3189DF50B00527132 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		F0531FE7189EB1A900527132 /* AppSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSettings.h; sourceTree = "<group>"; };
+		F0531FE8189EB1A900527132 /* AppSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSettings.m; sourceTree = "<group>"; };
 		F0A25A351896FB8B006AB1AF /* NTApiSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NTApiSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A25A381896FB8B006AB1AF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F0A25A3A1896FB8B006AB1AF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -131,6 +134,15 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
+		F0531FE6189EB17C00527132 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				F0531FE7189EB1A900527132 /* AppSettings.h */,
+				F0531FE8189EB1A900527132 /* AppSettings.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		F0A25A2C1896FB8B006AB1AF = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +176,7 @@
 		F0A25A3E1896FB8B006AB1AF /* NTApiSample */ = {
 			isa = PBXGroup;
 			children = (
+				F0531FE6189EB17C00527132 /* Classes */,
 				F0A25A891896FC58006AB1AF /* OpenWeatherApi */,
 				F0A25A671896FBF2006AB1AF /* NTApiClient */,
 				F0A25A471896FB8B006AB1AF /* AppDelegate.h */,
@@ -354,6 +367,7 @@
 				F0A25A831896FC0A006AB1AF /* NTApiArg.m in Sources */,
 				F0A25A7D1896FC0A006AB1AF /* NTApiClient.m in Sources */,
 				F0A25A8C1896FCB8006AB1AF /* OpenWeatherApiClient.m in Sources */,
+				F0531FE9189EB1A900527132 /* AppSettings.m in Sources */,
 				F0A25A8F189728CC006AB1AF /* CurrentWeather.m in Sources */,
 				F0A25A491896FB8B006AB1AF /* AppDelegate.m in Sources */,
 				F0A25A7F1896FC0A006AB1AF /* NTApiRequest.m in Sources */,

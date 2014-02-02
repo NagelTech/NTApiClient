@@ -40,6 +40,7 @@ OpenWeatherApiUnit OpenWeatherApiUnitMetric = @"metric";
     if ( self )
     {
         self.unit = [self.class getDefault:@"unit"];
+        self.appid = [self.class getDefault:@"appid"];
     }
     
     return self;
@@ -50,11 +51,12 @@ OpenWeatherApiUnit OpenWeatherApiUnitMetric = @"metric";
 {
     // This method should do whatever is common to ALL requests - generally extracting error messages, etc.
     
-    // We always want to get JSON responses, so we will add that argument here...
+    // We always want to get JSON responses, so we will add that argument here. Also, if an appid is provided we will include it
     
     args = [args arrayByAddingObjectsFromArray:
             @[
                 [NTApiUrlArg argWithName:@"mode" string:@"json"],
+                [NTApiHeaderArg headerWithName:@"x-api-key" value:self.appid],  // pass as a http header to show how ;)
             ]];
     
     NTApiRequest *request = [self beginRequest:command args:args responseHandler:^(NTApiResponse *response)

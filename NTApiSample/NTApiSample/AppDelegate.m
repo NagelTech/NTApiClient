@@ -11,6 +11,9 @@
 #import "MainViewController.h"
 
 
+//#define OPENWEATHER_APPID @"XXXX" // optionally, get an API key at: http://openweathermap.org/appid
+
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -21,6 +24,10 @@
     
     [OpenWeatherApiClient setDefault:@"baseUrl" value:@"http://api.openweathermap.org/data/2.5"];
     [OpenWeatherApiClient setDefault:@"unit" value:(isMetric) ? OpenWeatherApiUnitMetric : OpenWeatherApiUnitImperial];
+    
+#ifdef OPENWEATHER_APPID
+    [OpenWeatherApiClient setDefault:@"appid" value:OPENWEATHER_APPID];
+#endif
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.

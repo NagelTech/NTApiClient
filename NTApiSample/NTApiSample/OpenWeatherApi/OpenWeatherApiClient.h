@@ -15,6 +15,13 @@ typedef NSString *OpenWeatherApiUnit;
 extern OpenWeatherApiUnit OpenWeatherApiUnitImperial;
 extern OpenWeatherApiUnit OpenWeatherApiUnitMetric;
 
+typedef NSString *OpenWeatherSearchType;
+extern OpenWeatherSearchType OpenWeatherSearchTypeAccurate;
+extern OpenWeatherSearchType OpenWeatherSearchTypeLike;
+
+extern NSString *OpenWeatherErrorCodeSuccess;
+extern NSString *OpenWeatherErrorCodeError;
+extern NSString *OpenWeatherErrorCodeNotFound;
 
 @interface OpenWeatherApiClient : NTApiClient
 
@@ -24,6 +31,9 @@ extern OpenWeatherApiUnit OpenWeatherApiUnitMetric;
 +(instancetype)apiClient;
 
 +(NSSet *)allUnits;
+
+
+-(NTApiRequest *)beginFindCitiesWithName:(NSString *)cityName searchType:(OpenWeatherSearchType)searchType maxItems:(int)maxItems  responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler;
 
 -(NTApiRequest *)beginGetCurrentWeatherWithCityCodes:(NSArray *)cityCodes responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler;
 

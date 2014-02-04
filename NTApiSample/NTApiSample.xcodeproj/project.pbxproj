@@ -10,6 +10,9 @@
 		F0531FE4189DF50B00527132 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FE2189DF50B00527132 /* MainViewController.m */; };
 		F0531FE5189DF50B00527132 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F0531FE3189DF50B00527132 /* MainViewController.xib */; };
 		F0531FE9189EB1A900527132 /* AppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FE8189EB1A900527132 /* AppSettings.m */; };
+		F0531FED189FF27400527132 /* FindCityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FEB189FF27400527132 /* FindCityViewController.m */; };
+		F0531FEE189FF27400527132 /* FindCityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F0531FEC189FF27400527132 /* FindCityViewController.xib */; };
+		F0531FF418A082E100527132 /* NSDictionary+Json.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FF318A082E100527132 /* NSDictionary+Json.m */; };
 		F0A25A391896FB8B006AB1AF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A381896FB8B006AB1AF /* Foundation.framework */; };
 		F0A25A3B1896FB8B006AB1AF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A3A1896FB8B006AB1AF /* CoreGraphics.framework */; };
 		F0A25A3D1896FB8B006AB1AF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A3C1896FB8B006AB1AF /* UIKit.framework */; };
@@ -55,6 +58,11 @@
 		F0531FE3189DF50B00527132 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 		F0531FE7189EB1A900527132 /* AppSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSettings.h; sourceTree = "<group>"; };
 		F0531FE8189EB1A900527132 /* AppSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSettings.m; sourceTree = "<group>"; };
+		F0531FEA189FF27400527132 /* FindCityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FindCityViewController.h; sourceTree = "<group>"; };
+		F0531FEB189FF27400527132 /* FindCityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FindCityViewController.m; sourceTree = "<group>"; };
+		F0531FEC189FF27400527132 /* FindCityViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FindCityViewController.xib; sourceTree = "<group>"; };
+		F0531FF218A082E100527132 /* NSDictionary+Json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Json.h"; sourceTree = "<group>"; };
+		F0531FF318A082E100527132 /* NSDictionary+Json.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Json.m"; sourceTree = "<group>"; };
 		F0A25A351896FB8B006AB1AF /* NTApiSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NTApiSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0A25A381896FB8B006AB1AF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F0A25A3A1896FB8B006AB1AF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -130,6 +138,9 @@
 				F0531FE1189DF50B00527132 /* MainViewController.h */,
 				F0531FE2189DF50B00527132 /* MainViewController.m */,
 				F0531FE3189DF50B00527132 /* MainViewController.xib */,
+				F0531FEA189FF27400527132 /* FindCityViewController.h */,
+				F0531FEB189FF27400527132 /* FindCityViewController.m */,
+				F0531FEC189FF27400527132 /* FindCityViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -139,6 +150,8 @@
 			children = (
 				F0531FE7189EB1A900527132 /* AppSettings.h */,
 				F0531FE8189EB1A900527132 /* AppSettings.m */,
+				F0531FF218A082E100527132 /* NSDictionary+Json.h */,
+				F0531FF318A082E100527132 /* NSDictionary+Json.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -248,12 +261,12 @@
 		F0A25A891896FC58006AB1AF /* OpenWeatherApi */ = {
 			isa = PBXGroup;
 			children = (
-				F0A25A8A1896FCB8006AB1AF /* OpenWeatherApiClient.h */,
-				F0A25A8B1896FCB8006AB1AF /* OpenWeatherApiClient.m */,
 				F0A25A8D189728CC006AB1AF /* CurrentWeather.h */,
 				F0A25A8E189728CC006AB1AF /* CurrentWeather.m */,
 				F0A25A90189728E3006AB1AF /* ModelObject.h */,
 				F0A25A91189728E3006AB1AF /* ModelObject.m */,
+				F0A25A8A1896FCB8006AB1AF /* OpenWeatherApiClient.h */,
+				F0A25A8B1896FCB8006AB1AF /* OpenWeatherApiClient.m */,
 			);
 			path = OpenWeatherApi;
 			sourceTree = "<group>";
@@ -334,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A25A7E1896FC0A006AB1AF /* NTApiClient.podspec in Resources */,
+				F0531FEE189FF27400527132 /* FindCityViewController.xib in Resources */,
 				F0531FE5189DF50B00527132 /* MainViewController.xib in Resources */,
 				F0A25A431896FB8B006AB1AF /* InfoPlist.strings in Resources */,
 				F0A25A871896FC0A006AB1AF /* README.txt in Resources */,
@@ -358,6 +372,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A25A92189728E3006AB1AF /* ModelObject.m in Sources */,
+				F0531FF418A082E100527132 /* NSDictionary+Json.m in Sources */,
+				F0531FED189FF27400527132 /* FindCityViewController.m in Sources */,
 				F0A25A841896FC0A006AB1AF /* NTApiConst.m in Sources */,
 				F0A25A801896FC0A006AB1AF /* NTApiError.m in Sources */,
 				F0A25A851896FC0A006AB1AF /* NTApiRequestBuilder.m in Sources */,

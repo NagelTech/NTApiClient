@@ -19,6 +19,7 @@
 // Classes
 
 #import "AppSettings.h"
+#import "NSDictionary+Json.h"
 
 // NTApiClient
 

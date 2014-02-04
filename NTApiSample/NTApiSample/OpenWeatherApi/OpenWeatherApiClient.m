@@ -12,8 +12,26 @@
 OpenWeatherApiUnit OpenWeatherApiUnitImperial = @"imperial";
 OpenWeatherApiUnit OpenWeatherApiUnitMetric = @"metric";
 
+OpenWeatherSearchType OpenWeatherSearchTypeAccurate = @"accurate";
+OpenWeatherSearchType OpenWeatherSearchTypeLike = @"like";
+
+
+NSString *OpenWeatherErrorCodeSuccess = @"200";
+NSString *OpenWeatherErrorCodeError = @"500";
+NSString *OpenWeatherErrorCodeNotFound = @"404";
+
 
 @implementation OpenWeatherApiClient
+
+
++(void)load
+{
+    // Register our error codes...
+    
+    [NTApiError addErrorCode:OpenWeatherErrorCodeSuccess];
+    [NTApiError addErrorCode:OpenWeatherErrorCodeError];
+    [NTApiError addErrorCode:OpenWeatherErrorCodeNotFound];
+}
 
 
 +(instancetype)apiClient
@@ -67,11 +85,17 @@ OpenWeatherApiUnit OpenWeatherApiUnitMetric = @"metric";
         
         if ( !error )
         {
-            // Note: as far as I know, the OpenWearher API doesn't return this, it's more of an example...
-            NSDictionary *errorJson = [response.json valueForKey:@"error"];
+            NSString *errorCode = [response.json valueForKey:@"cod"];
 
-            if ( errorJson )
-                error = [NTApiError errorWithCode:[errorJson valueForKey:@"code"] message:[errorJson valueForKey:@"message"]];
+            if ( errorCode && ![errorCode isEqualToString:OpenWeatherErrorCodeSuccess] )
+            {
+                NSString *errorMessage = [response.json valueForKey:@"message"];
+
+                if ( !errorMessage.length )
+                    errorMessage = [NSString stringWithFormat:@"API Error %@", errorCode];
+                
+                error = [NTApiError errorWithCode:errorCode message:errorMessage];
+            }
         }
         
         responseHandler(response.json, error);
@@ -97,6 +121,30 @@ OpenWeatherApiUnit OpenWeatherApiUnitMetric = @"metric";
 }
 
 
+-(NTApiRequest *)beginFindCitiesWithName:(NSString *)cityName searchType:(OpenWeatherSearchType)searchType maxItems:(int)maxItems  responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler
+{
+    return [self beginStdRequest:@"find"
+                            args:@[
+                                   [NTApiUrlArg argWithName:@"q" string:cityName],
+                                   [NTApiUrlArg argWithName:@"type" string:searchType],
+                                   [NTApiUrlArg argWithName:@"cnt" intValue:maxItems],
+                                   ]
+                 responseHandler:^(NSDictionary *data, NTApiError *error)
+    {
+        NSArray *currentWeatherItems = nil;
+        
+        if ( data )
+        {
+            NSArray *jsonItems = [data arrayForKey:@"list"];
+
+            currentWeatherItems = [CurrentWeather itemArrayWithJsonArray:jsonItems];
+        }
+        
+        responseHandler(currentWeatherItems, error);
+    }];
+}
+
+
 -(NTApiRequest *)beginGetCurrentWeatherWithCityCodes:(NSArray *)cityCodes responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler
 {
     NSString *codesCSV = [cityCodes componentsJoinedByString:@","];
@@ -111,7 +159,7 @@ OpenWeatherApiUnit OpenWeatherApiUnitMetric = @"metric";
         
         if ( data )
         {
-            NSArray *jsonItems = [data objectForKey:@"list"];
+            NSArray *jsonItems = [data arrayForKey:@"list"];
             
             currentWeatherItems = [CurrentWeather itemArrayWithJsonArray:jsonItems];
         }

@@ -8,8 +8,10 @@
 
 #import "MainViewController.h"
 
+#import "FindCityViewController.h"
 
-@interface MainViewController () <UITableViewDataSource, UITableViewDelegate>
+
+@interface MainViewController () <UITableViewDataSource, UITableViewDelegate, FindCityViewControllerDelegate>
 {
     NTApiRequest *_currentRequest;
 }
@@ -68,10 +70,14 @@
         NSLog(@"Cancelling getCurrentWeather request");
         [_currentRequest cancel];
     }
+    
+    self.title = @"Updating...";
 
     _currentRequest = [[OpenWeatherApiClient apiClient] beginGetCurrentWeatherWithCityCodes:self.cityCodes responseHandler:^(NSArray *currentWeatherItems, NTApiError *error)
      {
          _currentRequest = nil;
+         
+         self.title = @"Current Weather";
          
          if ( error )
          {
@@ -123,9 +129,12 @@
     
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(beginRefreshWeather) name:UIApplicationWillEnterForegroundNotification object:nil];
     
-    // Grab the current weather...
+    // Grab the current weather if we haven't...
     
-    [self beginRefreshWeather];
+    if ( !self.currentWeatherItems )
+    {
+        [self beginRefreshWeather];
+    }
 }
 
 
@@ -142,7 +151,31 @@
 
 -(IBAction)addCity:(id)sender
 {
-    // todo
+    FindCityViewController *viewController = [[FindCityViewController alloc] init];
+    
+    viewController.delegate = self;
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+}
+
+#pragma mark - FindCityViewControllerDelegate
+
+
+-(void)findCityViewController:(FindCityViewController *)viewController selectedCityWithCurrentWeather:(CurrentWeather *)currentWeather
+{
+    // Save to our persistent cityCodes list...
+    
+    NSArray *cityCodes = [AppSettings.defaultSettings.cityCodes arrayByAddingObject:currentWeather.cityCode];
+    
+    AppSettings.defaultSettings.cityCodes = cityCodes;
+    
+    // And add it to our current weather array...
+    
+    self.currentWeatherItems = [self.currentWeatherItems arrayByAddingObject:currentWeather];
+
+    [self.tableView reloadData];
+    
+    [viewController.navigationController popViewControllerAnimated:YES];
 }
 
 

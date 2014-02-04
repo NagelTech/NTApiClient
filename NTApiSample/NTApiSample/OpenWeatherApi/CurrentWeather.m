@@ -16,17 +16,21 @@
 {
     if ( (self = [super initWithJson:json]) )
     {
-        _cityCode = [json objectForKey:@"id"];
-        _cityName = [json objectForKey:@"name"];
+        _cityCode = [json stringForKey:@"id"];
+        _cityName = [json stringForKey:@"name"];
         
-        NSDictionary *weather = [[json objectForKey:@"weather"] lastObject];
+        NSDictionary *sys = [json dictionaryForKey:@"sys"];
         
-        _weatherDescription = [weather objectForKey:@"description"];
-        _weatherIcon = [weather objectForKey:@"icon"];
+        _country = [sys stringForKey:@"country"];
         
-        NSDictionary *main = [json objectForKey:@"main"];
+        NSDictionary *weather = [[json arrayForKey:@"weather"] lastObject];
         
-        _temp = [[main objectForKey:@"temp"] floatValue];
+        _weatherDescription = [weather stringForKey:@"description"];
+        _weatherIcon = [weather stringForKey:@"icon"];
+        
+        NSDictionary *main = [json dictionaryForKey:@"main"];
+        
+        _temp = [main floatForKey:@"temp"];
         
         if ( [OpenWeatherApiClient getDefault:@"unit"] == OpenWeatherApiUnitMetric )
             _temp -= 273.15;   // convert from kelvin to celsius if metric

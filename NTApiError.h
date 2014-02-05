@@ -8,9 +8,6 @@
 #import <Foundation/Foundation.h>
 
 
-// Negative NTApiErrorCodes are reserved as follows...
-
-
 extern NSString *NTApiErrorCodeNSError;
 extern NSString *NTApiErrorCodeInvalidJson;
 extern NSString *NTApiErrorCodeError;               // generic error

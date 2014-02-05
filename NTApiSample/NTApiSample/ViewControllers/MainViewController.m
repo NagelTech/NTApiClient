@@ -16,30 +16,12 @@
     NTApiRequest *_currentRequest;
 }
 
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-
-@property (nonatomic) NSArray *cityCodes;
 @property (nonatomic) NSArray *currentWeatherItems;
 
 @end
 
 
 @implementation MainViewController
-
-
-#pragma mark - Properties
-
-
--(NSArray *)cityCodes
-{
-    return AppSettings.defaultSettings.cityCodes;
-}
-
-
--(void)setCityCodes:(NSArray *)cityCodes
-{
-    AppSettings.defaultSettings.cityCodes = cityCodes;
-}
 
 
 #pragma mark - Initialization
@@ -73,7 +55,7 @@
     
     self.title = @"Updating...";
 
-    _currentRequest = [[OpenWeatherApiClient apiClient] beginGetCurrentWeatherWithCityCodes:self.cityCodes responseHandler:^(NSArray *currentWeatherItems, NTApiError *error)
+    _currentRequest = [[OpenWeatherApiClient apiClient] beginGetCurrentWeatherWithCityCodes:AppSettings.defaultSettings.cityCodes responseHandler:^(NSArray *currentWeatherItems, NTApiError *error)
      {
          _currentRequest = nil;
          
@@ -197,6 +179,7 @@
     if ( !cell )
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     CurrentWeather *item = self.currentWeatherItems[indexPath.row];
@@ -205,6 +188,45 @@
     cell.detailTextLabel.text =  [NSString stringWithFormat:@"%@, %.0f degrees", item.weatherDescription, item.temp];
     
     return cell;
+}
+
+
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ( editingStyle == UITableViewCellEditingStyleDelete )
+    {
+        CurrentWeather *currentWeather = self.currentWeatherItems[indexPath.row];
+        
+        [tableView beginUpdates];
+        
+        // update the data models...
+
+        NSMutableArray *currentWeatherItems = [self.currentWeatherItems mutableCopy];
+        
+        [currentWeatherItems removeObjectAtIndex:indexPath.row];
+        
+        self.currentWeatherItems = currentWeatherItems;
+        
+        NSMutableArray *cityCodes = [AppSettings.defaultSettings.cityCodes mutableCopy];
+        
+        [cityCodes removeObject:currentWeather.cityCode];
+        
+        AppSettings.defaultSettings.cityCodes = [cityCodes copy];
+        
+        // remove from the tableView...
+        
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        // Commit...
+        
+        [tableView endUpdates];
+    }
 }
 
 

@@ -14,7 +14,6 @@
     NTApiRequest *_currentRequest;
 }
 
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 
 @property (nonatomic) NSArray *currentWeatherItems;
@@ -45,11 +44,15 @@
         [_currentRequest cancel];
     }
     
+    self.title = @"Searching...";
+    
     _currentRequest = [[OpenWeatherApiClient apiClient] beginFindCitiesWithName:cityName
                                                                      searchType:OpenWeatherSearchTypeLike
                                                                        maxItems:20
                                                                 responseHandler:^(NSArray *currentWeatherItems, NTApiError *error)
     {
+        self.title = @"Add City";
+        
         _currentRequest = nil;
         
         if ( error.errorCode == NTApiErrorCodeRequestCancelled  )

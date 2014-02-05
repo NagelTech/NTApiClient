@@ -12,7 +12,7 @@
 @protocol FindCityViewControllerDelegate;
 
 
-@interface FindCityViewController : UIViewController
+@interface FindCityViewController : UITableViewController
 
 @property (nonatomic,weak) id<FindCityViewControllerDelegate> delegate;
 

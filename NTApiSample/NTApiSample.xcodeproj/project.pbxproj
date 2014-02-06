@@ -509,6 +509,12 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NTApiSample/NTApiSample-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					NTAPI_LOG_INTERNAL,
+					NTAPI_JSON_NSJSON,
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = "NTApiSample/NTApiSample-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

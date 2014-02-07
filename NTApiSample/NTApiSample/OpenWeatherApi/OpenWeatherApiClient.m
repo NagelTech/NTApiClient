@@ -107,7 +107,7 @@ NSString *OpenWeatherErrorCodeNotFound = @"404";
 
 -(NTApiRequest *)beginStdRequest:(NSString *)command args:(NSArray *)args responseHandler:(void (^)(NSDictionary *data, NTApiError *error))responseHandler
 {
-    // This method should hanbdle items that are generally common to requests. It may add standard parameters such
+    // This method should handle items that are generally common to requests. It may add standard parameters such
     // as a session token or even make multiple API calls to do something like re-authenticate transparently. It should
     // make one or more calls to beginDirectRequest.
 
@@ -121,28 +121,28 @@ NSString *OpenWeatherErrorCodeNotFound = @"404";
 }
 
 
--(NTApiRequest *)beginFindCitiesWithName:(NSString *)cityName searchType:(OpenWeatherSearchType)searchType maxItems:(int)maxItems  responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler
-{
-    return [self beginStdRequest:@"find"
-                            args:@[
-                                   [NTApiUrlArg argWithName:@"q" string:cityName],
-                                   [NTApiUrlArg argWithName:@"type" string:searchType],
-                                   [NTApiUrlArg argWithName:@"cnt" intValue:maxItems],
-                                   ]
-                 responseHandler:^(NSDictionary *data, NTApiError *error)
+    -(NTApiRequest *)beginFindCitiesWithName:(NSString *)cityName searchType:(OpenWeatherSearchType)searchType maxItems:(int)maxItems  responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler
     {
-        NSArray *currentWeatherItems = nil;
-        
-        if ( data )
+        return [self beginStdRequest:@"find"
+                                args:@[
+                                       [NTApiUrlArg argWithName:@"q" string:cityName],
+                                       [NTApiUrlArg argWithName:@"type" string:searchType],
+                                       [NTApiUrlArg argWithName:@"cnt" intValue:maxItems],
+                                       ]
+                     responseHandler:^(NSDictionary *data, NTApiError *error)
         {
-            NSArray *jsonItems = [data arrayForKey:@"list"];
+            NSArray *currentWeatherItems = nil;
+            
+            if ( data )
+            {
+                NSArray *jsonItems = [data arrayForKey:@"list"];
 
-            currentWeatherItems = [CurrentWeather itemArrayWithJsonArray:jsonItems];
-        }
-        
-        responseHandler(currentWeatherItems, error);
-    }];
-}
+                currentWeatherItems = [CurrentWeather itemArrayWithJsonArray:jsonItems];
+            }
+            
+            responseHandler(currentWeatherItems, error);
+        }];
+    }
 
 
 -(NTApiRequest *)beginGetCurrentWeatherWithCityCodes:(NSArray *)cityCodes responseHandler:(void (^)(NSArray *currentWeatherItems, NTApiError *error))responseHandler

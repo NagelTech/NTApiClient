@@ -25,21 +25,21 @@
 		F0A25A541896FB8B006AB1AF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A25A3C1896FB8B006AB1AF /* UIKit.framework */; };
 		F0A25A5C1896FB8B006AB1AF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F0A25A5A1896FB8B006AB1AF /* InfoPlist.strings */; };
 		F0A25A5E1896FB8B006AB1AF /* NTApiSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A5D1896FB8B006AB1AF /* NTApiSampleTests.m */; };
-		F0A25A7D1896FC0A006AB1AF /* NTApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A681896FC0A006AB1AF /* NTApiClient.m */; };
-		F0A25A7E1896FC0A006AB1AF /* NTApiClient.podspec in Resources */ = {isa = PBXBuildFile; fileRef = F0A25A691896FC0A006AB1AF /* NTApiClient.podspec */; };
-		F0A25A7F1896FC0A006AB1AF /* NTApiRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A6A1896FC0A006AB1AF /* NTApiRequest.m */; };
-		F0A25A801896FC0A006AB1AF /* NTApiError.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A6C1896FC0A006AB1AF /* NTApiError.m */; };
-		F0A25A811896FC0A006AB1AF /* NTApiRequestProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A6D1896FC0A006AB1AF /* NTApiRequestProcessor.m */; };
-		F0A25A821896FC0A006AB1AF /* NSThread+MCSMAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A6F1896FC0A006AB1AF /* NSThread+MCSMAdditions.m */; };
-		F0A25A831896FC0A006AB1AF /* NTApiArg.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A711896FC0A006AB1AF /* NTApiArg.m */; };
-		F0A25A841896FC0A006AB1AF /* NTApiConst.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A741896FC0A006AB1AF /* NTApiConst.m */; };
-		F0A25A851896FC0A006AB1AF /* NTApiRequestBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A761896FC0A006AB1AF /* NTApiRequestBuilder.m */; };
-		F0A25A861896FC0A006AB1AF /* NTApiResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A791896FC0A006AB1AF /* NTApiResponse.m */; };
-		F0A25A871896FC0A006AB1AF /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = F0A25A7B1896FC0A006AB1AF /* README.txt */; };
-		F0A25A881896FC0A006AB1AF /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F0A25A7C1896FC0A006AB1AF /* LICENSE.txt */; };
 		F0A25A8C1896FCB8006AB1AF /* OpenWeatherApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A8B1896FCB8006AB1AF /* OpenWeatherApiClient.m */; };
 		F0A25A8F189728CC006AB1AF /* CurrentWeather.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A8E189728CC006AB1AF /* CurrentWeather.m */; };
 		F0A25A92189728E3006AB1AF /* ModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A25A91189728E3006AB1AF /* ModelObject.m */; };
+		F0F6A64C18A5519300B20E67 /* NTApiArg.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A63B18A5519300B20E67 /* NTApiArg.m */; };
+		F0F6A64D18A5519300B20E67 /* NTApiError.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A63E18A5519300B20E67 /* NTApiError.m */; };
+		F0F6A64E18A5519300B20E67 /* NTApiRequestBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64318A5519300B20E67 /* NTApiRequestBuilder.m */; };
+		F0F6A64F18A5519300B20E67 /* NTApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64418A5519300B20E67 /* NTApiClient.m */; };
+		F0F6A65018A5519300B20E67 /* NTApiRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64518A5519300B20E67 /* NTApiRequest.m */; };
+		F0F6A65118A5519300B20E67 /* NTApiRequestProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64618A5519300B20E67 /* NTApiRequestProcessor.m */; };
+		F0F6A65218A5519300B20E67 /* NSThread+MCSMAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64818A5519300B20E67 /* NSThread+MCSMAdditions.m */; };
+		F0F6A65318A5519300B20E67 /* NTApiConst.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64918A5519300B20E67 /* NTApiConst.m */; };
+		F0F6A65418A5519300B20E67 /* NTApiResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = F0F6A64B18A5519300B20E67 /* NTApiResponse.m */; };
+		F0F6A65818A551D500B20E67 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F0F6A65518A551D500B20E67 /* README.md */; };
+		F0F6A65918A551D500B20E67 /* NTApiClient.podspec in Resources */ = {isa = PBXBuildFile; fileRef = F0F6A65618A551D500B20E67 /* NTApiClient.podspec */; };
+		F0F6A65A18A551D500B20E67 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = F0F6A65718A551D500B20E67 /* LICENSE.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,33 +79,33 @@
 		F0A25A591896FB8B006AB1AF /* NTApiSampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NTApiSampleTests-Info.plist"; sourceTree = "<group>"; };
 		F0A25A5B1896FB8B006AB1AF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F0A25A5D1896FB8B006AB1AF /* NTApiSampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NTApiSampleTests.m; sourceTree = "<group>"; };
-		F0A25A681896FC0A006AB1AF /* NTApiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiClient.m; path = ../../NTApiClient.m; sourceTree = "<group>"; };
-		F0A25A691896FC0A006AB1AF /* NTApiClient.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = NTApiClient.podspec; path = ../../NTApiClient.podspec; sourceTree = "<group>"; };
-		F0A25A6A1896FC0A006AB1AF /* NTApiRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiRequest.m; path = ../../NTApiRequest.m; sourceTree = "<group>"; };
-		F0A25A6B1896FC0A006AB1AF /* NTApiError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiError.h; path = ../../NTApiError.h; sourceTree = "<group>"; };
-		F0A25A6C1896FC0A006AB1AF /* NTApiError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiError.m; path = ../../NTApiError.m; sourceTree = "<group>"; };
-		F0A25A6D1896FC0A006AB1AF /* NTApiRequestProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiRequestProcessor.m; path = ../../NTApiRequestProcessor.m; sourceTree = "<group>"; };
-		F0A25A6E1896FC0A006AB1AF /* NSThread+MCSMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSThread+MCSMAdditions.h"; path = "../../NSThread+MCSMAdditions.h"; sourceTree = "<group>"; };
-		F0A25A6F1896FC0A006AB1AF /* NSThread+MCSMAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSThread+MCSMAdditions.m"; path = "../../NSThread+MCSMAdditions.m"; sourceTree = "<group>"; };
-		F0A25A701896FC0A006AB1AF /* NTApiArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiArg.h; path = ../../NTApiArg.h; sourceTree = "<group>"; };
-		F0A25A711896FC0A006AB1AF /* NTApiArg.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiArg.m; path = ../../NTApiArg.m; sourceTree = "<group>"; };
-		F0A25A721896FC0A006AB1AF /* NTApiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiClient.h; path = ../../NTApiClient.h; sourceTree = "<group>"; };
-		F0A25A731896FC0A006AB1AF /* NTApiConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiConst.h; path = ../../NTApiConst.h; sourceTree = "<group>"; };
-		F0A25A741896FC0A006AB1AF /* NTApiConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiConst.m; path = ../../NTApiConst.m; sourceTree = "<group>"; };
-		F0A25A751896FC0A006AB1AF /* NTApiRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiRequest.h; path = ../../NTApiRequest.h; sourceTree = "<group>"; };
-		F0A25A761896FC0A006AB1AF /* NTApiRequestBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiRequestBuilder.m; path = ../../NTApiRequestBuilder.m; sourceTree = "<group>"; };
-		F0A25A771896FC0A006AB1AF /* NTApiRequestProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiRequestProcessor.h; path = ../../NTApiRequestProcessor.h; sourceTree = "<group>"; };
-		F0A25A781896FC0A006AB1AF /* NTApiResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiResponse.h; path = ../../NTApiResponse.h; sourceTree = "<group>"; };
-		F0A25A791896FC0A006AB1AF /* NTApiResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NTApiResponse.m; path = ../../NTApiResponse.m; sourceTree = "<group>"; };
-		F0A25A7A1896FC0A006AB1AF /* NTApiRequestBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NTApiRequestBuilder.h; path = ../../NTApiRequestBuilder.h; sourceTree = "<group>"; };
-		F0A25A7B1896FC0A006AB1AF /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.txt; path = ../../README.txt; sourceTree = "<group>"; };
-		F0A25A7C1896FC0A006AB1AF /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../LICENSE.txt; sourceTree = "<group>"; };
 		F0A25A8A1896FCB8006AB1AF /* OpenWeatherApiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenWeatherApiClient.h; sourceTree = "<group>"; };
 		F0A25A8B1896FCB8006AB1AF /* OpenWeatherApiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenWeatherApiClient.m; sourceTree = "<group>"; };
 		F0A25A8D189728CC006AB1AF /* CurrentWeather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurrentWeather.h; sourceTree = "<group>"; };
 		F0A25A8E189728CC006AB1AF /* CurrentWeather.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurrentWeather.m; sourceTree = "<group>"; };
 		F0A25A90189728E3006AB1AF /* ModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelObject.h; sourceTree = "<group>"; };
 		F0A25A91189728E3006AB1AF /* ModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelObject.m; sourceTree = "<group>"; };
+		F0F6A63A18A5519300B20E67 /* NTApiArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiArg.h; sourceTree = "<group>"; };
+		F0F6A63B18A5519300B20E67 /* NTApiArg.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiArg.m; sourceTree = "<group>"; };
+		F0F6A63C18A5519300B20E67 /* NTApiConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiConst.h; sourceTree = "<group>"; };
+		F0F6A63D18A5519300B20E67 /* NTApiError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiError.h; sourceTree = "<group>"; };
+		F0F6A63E18A5519300B20E67 /* NTApiError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiError.m; sourceTree = "<group>"; };
+		F0F6A63F18A5519300B20E67 /* NTApiRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiRequest.h; sourceTree = "<group>"; };
+		F0F6A64018A5519300B20E67 /* NTApiRequestProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiRequestProcessor.h; sourceTree = "<group>"; };
+		F0F6A64118A5519300B20E67 /* NTApiRequestBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiRequestBuilder.h; sourceTree = "<group>"; };
+		F0F6A64218A5519300B20E67 /* NTApiClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiClient.h; sourceTree = "<group>"; };
+		F0F6A64318A5519300B20E67 /* NTApiRequestBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiRequestBuilder.m; sourceTree = "<group>"; };
+		F0F6A64418A5519300B20E67 /* NTApiClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiClient.m; sourceTree = "<group>"; };
+		F0F6A64518A5519300B20E67 /* NTApiRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiRequest.m; sourceTree = "<group>"; };
+		F0F6A64618A5519300B20E67 /* NTApiRequestProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiRequestProcessor.m; sourceTree = "<group>"; };
+		F0F6A64718A5519300B20E67 /* NSThread+MCSMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSThread+MCSMAdditions.h"; sourceTree = "<group>"; };
+		F0F6A64818A5519300B20E67 /* NSThread+MCSMAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSThread+MCSMAdditions.m"; sourceTree = "<group>"; };
+		F0F6A64918A5519300B20E67 /* NTApiConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiConst.m; sourceTree = "<group>"; };
+		F0F6A64A18A5519300B20E67 /* NTApiResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NTApiResponse.h; sourceTree = "<group>"; };
+		F0F6A64B18A5519300B20E67 /* NTApiResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiResponse.m; sourceTree = "<group>"; };
+		F0F6A65518A551D500B20E67 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
+		F0F6A65618A551D500B20E67 /* NTApiClient.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = NTApiClient.podspec; path = ../../NTApiClient.podspec; sourceTree = "<group>"; };
+		F0F6A65718A551D500B20E67 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE.txt; path = ../../LICENSE.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,7 +191,7 @@
 			children = (
 				F0531FE6189EB17C00527132 /* Classes */,
 				F0A25A891896FC58006AB1AF /* OpenWeatherApi */,
-				F0A25A671896FBF2006AB1AF /* NTApiClient */,
+				F0A25A671896FBF2006AB1AF /* NTApiClient/Core */,
 				F0A25A471896FB8B006AB1AF /* AppDelegate.h */,
 				F0A25A481896FB8B006AB1AF /* AppDelegate.m */,
 				F0A25A4A1896FB8B006AB1AF /* Images.xcassets */,
@@ -204,10 +204,13 @@
 		F0A25A3F1896FB8B006AB1AF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F0A25A401896FB8B006AB1AF /* NTApiSample-Info.plist */,
 				F0A25A411896FB8B006AB1AF /* InfoPlist.strings */,
+				F0F6A65718A551D500B20E67 /* LICENSE.txt */,
 				F0A25A441896FB8B006AB1AF /* main.m */,
+				F0F6A65618A551D500B20E67 /* NTApiClient.podspec */,
+				F0A25A401896FB8B006AB1AF /* NTApiSample-Info.plist */,
 				F0A25A461896FB8B006AB1AF /* NTApiSample-Prefix.pch */,
+				F0F6A65518A551D500B20E67 /* README.md */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -230,32 +233,30 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		F0A25A671896FBF2006AB1AF /* NTApiClient */ = {
+		F0A25A671896FBF2006AB1AF /* NTApiClient/Core */ = {
 			isa = PBXGroup;
 			children = (
-				F0A25A7C1896FC0A006AB1AF /* LICENSE.txt */,
-				F0A25A6E1896FC0A006AB1AF /* NSThread+MCSMAdditions.h */,
-				F0A25A6F1896FC0A006AB1AF /* NSThread+MCSMAdditions.m */,
-				F0A25A701896FC0A006AB1AF /* NTApiArg.h */,
-				F0A25A711896FC0A006AB1AF /* NTApiArg.m */,
-				F0A25A721896FC0A006AB1AF /* NTApiClient.h */,
-				F0A25A681896FC0A006AB1AF /* NTApiClient.m */,
-				F0A25A691896FC0A006AB1AF /* NTApiClient.podspec */,
-				F0A25A731896FC0A006AB1AF /* NTApiConst.h */,
-				F0A25A741896FC0A006AB1AF /* NTApiConst.m */,
-				F0A25A6B1896FC0A006AB1AF /* NTApiError.h */,
-				F0A25A6C1896FC0A006AB1AF /* NTApiError.m */,
-				F0A25A751896FC0A006AB1AF /* NTApiRequest.h */,
-				F0A25A6A1896FC0A006AB1AF /* NTApiRequest.m */,
-				F0A25A7A1896FC0A006AB1AF /* NTApiRequestBuilder.h */,
-				F0A25A761896FC0A006AB1AF /* NTApiRequestBuilder.m */,
-				F0A25A771896FC0A006AB1AF /* NTApiRequestProcessor.h */,
-				F0A25A6D1896FC0A006AB1AF /* NTApiRequestProcessor.m */,
-				F0A25A781896FC0A006AB1AF /* NTApiResponse.h */,
-				F0A25A791896FC0A006AB1AF /* NTApiResponse.m */,
-				F0A25A7B1896FC0A006AB1AF /* README.txt */,
+				F0F6A63A18A5519300B20E67 /* NTApiArg.h */,
+				F0F6A63B18A5519300B20E67 /* NTApiArg.m */,
+				F0F6A63C18A5519300B20E67 /* NTApiConst.h */,
+				F0F6A63D18A5519300B20E67 /* NTApiError.h */,
+				F0F6A63E18A5519300B20E67 /* NTApiError.m */,
+				F0F6A63F18A5519300B20E67 /* NTApiRequest.h */,
+				F0F6A64018A5519300B20E67 /* NTApiRequestProcessor.h */,
+				F0F6A64118A5519300B20E67 /* NTApiRequestBuilder.h */,
+				F0F6A64218A5519300B20E67 /* NTApiClient.h */,
+				F0F6A64318A5519300B20E67 /* NTApiRequestBuilder.m */,
+				F0F6A64418A5519300B20E67 /* NTApiClient.m */,
+				F0F6A64518A5519300B20E67 /* NTApiRequest.m */,
+				F0F6A64618A5519300B20E67 /* NTApiRequestProcessor.m */,
+				F0F6A64718A5519300B20E67 /* NSThread+MCSMAdditions.h */,
+				F0F6A64818A5519300B20E67 /* NSThread+MCSMAdditions.m */,
+				F0F6A64918A5519300B20E67 /* NTApiConst.m */,
+				F0F6A64A18A5519300B20E67 /* NTApiResponse.h */,
+				F0F6A64B18A5519300B20E67 /* NTApiResponse.m */,
 			);
-			name = NTApiClient;
+			name = NTApiClient/Core;
+			path = ../../Core;
 			sourceTree = "<group>";
 		};
 		F0A25A891896FC58006AB1AF /* OpenWeatherApi */ = {
@@ -346,13 +347,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0A25A7E1896FC0A006AB1AF /* NTApiClient.podspec in Resources */,
+				F0F6A65918A551D500B20E67 /* NTApiClient.podspec in Resources */,
 				F0531FEE189FF27400527132 /* FindCityViewController.xib in Resources */,
 				F0531FE5189DF50B00527132 /* MainViewController.xib in Resources */,
+				F0F6A65818A551D500B20E67 /* README.md in Resources */,
 				F0A25A431896FB8B006AB1AF /* InfoPlist.strings in Resources */,
-				F0A25A871896FC0A006AB1AF /* README.txt in Resources */,
-				F0A25A881896FC0A006AB1AF /* LICENSE.txt in Resources */,
 				F0A25A4B1896FB8B006AB1AF /* Images.xcassets in Resources */,
+				F0F6A65A18A551D500B20E67 /* LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,22 +373,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A25A92189728E3006AB1AF /* ModelObject.m in Sources */,
+				F0F6A65318A5519300B20E67 /* NTApiConst.m in Sources */,
 				F0531FF418A082E100527132 /* NSDictionary+Json.m in Sources */,
+				F0F6A65418A5519300B20E67 /* NTApiResponse.m in Sources */,
 				F0531FED189FF27400527132 /* FindCityViewController.m in Sources */,
-				F0A25A841896FC0A006AB1AF /* NTApiConst.m in Sources */,
-				F0A25A801896FC0A006AB1AF /* NTApiError.m in Sources */,
-				F0A25A851896FC0A006AB1AF /* NTApiRequestBuilder.m in Sources */,
-				F0A25A821896FC0A006AB1AF /* NSThread+MCSMAdditions.m in Sources */,
-				F0A25A861896FC0A006AB1AF /* NTApiResponse.m in Sources */,
-				F0A25A811896FC0A006AB1AF /* NTApiRequestProcessor.m in Sources */,
-				F0A25A831896FC0A006AB1AF /* NTApiArg.m in Sources */,
-				F0A25A7D1896FC0A006AB1AF /* NTApiClient.m in Sources */,
 				F0A25A8C1896FCB8006AB1AF /* OpenWeatherApiClient.m in Sources */,
 				F0531FE9189EB1A900527132 /* AppSettings.m in Sources */,
+				F0F6A64C18A5519300B20E67 /* NTApiArg.m in Sources */,
+				F0F6A65218A5519300B20E67 /* NSThread+MCSMAdditions.m in Sources */,
 				F0A25A8F189728CC006AB1AF /* CurrentWeather.m in Sources */,
 				F0A25A491896FB8B006AB1AF /* AppDelegate.m in Sources */,
-				F0A25A7F1896FC0A006AB1AF /* NTApiRequest.m in Sources */,
+				F0F6A65018A5519300B20E67 /* NTApiRequest.m in Sources */,
+				F0F6A64E18A5519300B20E67 /* NTApiRequestBuilder.m in Sources */,
+				F0F6A64F18A5519300B20E67 /* NTApiClient.m in Sources */,
 				F0531FE4189DF50B00527132 /* MainViewController.m in Sources */,
+				F0F6A64D18A5519300B20E67 /* NTApiError.m in Sources */,
+				F0F6A65118A5519300B20E67 /* NTApiRequestProcessor.m in Sources */,
 				F0A25A451896FB8B006AB1AF /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

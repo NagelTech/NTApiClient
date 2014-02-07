@@ -14,7 +14,6 @@
 #endif
 
 
-
 NSString *NTApiErrorCodeNSError = @"NTApiErrorCodeNSError";
 NSString *NTApiErrorCodeInvalidJson = @"NTApiErrorCodeInvalidJson";
 NSString *NTApiErrorCodeError = @"NTApiErrorCodeError";               // generic error

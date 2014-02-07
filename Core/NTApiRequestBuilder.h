@@ -11,6 +11,9 @@
 #import "NTApiError.h"
 
 
+/**
+ * Internal helper class used to build an URLRequest
+ */
 @interface NTApiRequestBuilder : NSObject
 
 

@@ -12,7 +12,9 @@
 
 @class NTApiResponse;
 
-
+/**
+ * Internal helper class that actually performs the request using NSURLRequest.
+ */
 @interface NTApiRequestProcessor : NTApiRequest
 
 

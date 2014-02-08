@@ -199,7 +199,7 @@
     if ( self.value )
         return [NSString stringWithFormat:@"Multi %@ = %@", self.name, self.value];
     else 
-        return [NSString stringWithFormat:@"Multi %@ = data[%d bytes] extension=%@", self.name, self.dataValue.length, self.fileExtension];
+        return [NSString stringWithFormat:@"Multi %@ = data[%lu bytes] extension=%@", self.name, (unsigned long)self.dataValue.length, self.fileExtension];
 }
 
 @end
@@ -238,7 +238,7 @@
 
 -(NSString *)description
 {
-    return [NSString stringWithFormat:@"Raw data[%d bytes] Content-Type=%@", self.rawData.length, self.contentType];
+    return [NSString stringWithFormat:@"Raw data[%lu bytes] Content-Type=%@", (unsigned long)self.rawData.length, self.contentType];
 }
 
 @end
@@ -525,7 +525,7 @@
 
 -(NSString *)description
 {
-    return [NSString stringWithFormat:@"Cache Policy %d", self.cachePolicy];
+    return [NSString stringWithFormat:@"Cache Policy %lu", (unsigned long)self.cachePolicy];
 }
 
 

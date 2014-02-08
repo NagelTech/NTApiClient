@@ -100,7 +100,7 @@
     //    LDebug(@"didSendBodyData %d/%d bytes", totalBytesWritten, totalBytesExpectedToWrite);
     
     if ( _uploadProgressHandler )
-        _uploadProgressHandler(totalBytesWritten, totalBytesExpectedToWrite);
+        _uploadProgressHandler((int)totalBytesWritten, (int)totalBytesExpectedToWrite);
 }
 
 
@@ -153,7 +153,7 @@
     
     if ( _downloadProgressHandler && self.data.length != _expectedContentLength )
     {
-        _downloadProgressHandler(self.data.length, self.data.length);
+        _downloadProgressHandler((int)self.data.length, (int)self.data.length);
     }
     
     _response.error = nil;
@@ -172,7 +172,7 @@
 //    LDebug(@"didReceiveData: (received %d) %d/%d bytes", data.length, mData.length, mExpectedContentLength);
 
     if ( _downloadProgressHandler )
-        _downloadProgressHandler(self.data.length, _expectedContentLength);
+        _downloadProgressHandler((int)self.data.length, _expectedContentLength);
 }
 
 

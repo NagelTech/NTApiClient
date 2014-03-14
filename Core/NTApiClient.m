@@ -479,7 +479,10 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     
     [[self class] networkRequestStarted:request options:options];
     
-     NTApiRequestProcessor *requestProcessor = [[NTApiRequestProcessor alloc] initWithURLRequest:request];
+    NTApiRequestProcessor *requestProcessor = [[NTApiRequestProcessor alloc] initWithURLRequest:request];
+    
+    if ( [options[NTApiOptionAllowInvalidSSLCert] isEqualToString:@"Y"] )
+        requestProcessor.allowInvalidSSLCert = YES;
     
     requestProcessor.responseHandler = ^(NTApiResponse *response)
     {

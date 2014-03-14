@@ -13,6 +13,7 @@ NSString *NTApiOptionIgnoreHTTPErrorCodes = @"NTApiOptionIgnoreHTTPErrorCodes";
 NSString *NTApiOptionResponseHandlerThreadType = @"NTApiOptionResponseHandlerThreadType";
 NSString *NTApiOptionUploadHandlerThreadType = @"NTApiOptionUploadHandlerThreadType";
 NSString *NTApiOptionDownloadHandlerThreadType = @"NTApiOptionDownloadHandlerThreadType";
+NSString *NTApiOptionAllowInvalidSSLCert = @"NTApiOptionAllowInvalidSSLCert";
 
 NSString *NTApiHeaderContentType = @"Content-Type";
 NSString *NTApiHeaderAuthorization = @"Authorization";

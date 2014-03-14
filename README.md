@@ -48,6 +48,13 @@ Logging
 Good logging is really important for an API. By default NTApi will log messages to NSLog using an overridable method -(void)writeLogWithType:andFormat:. You may override this to log to your favorite logging subsystem. Additionally, if you are using CocoaPods and install NTLog the NTAPIClient will automatically use it. You can disable all logging via a macro as well. (see NTAPI_LOG_* macros.) You can easily add another logging system that will be used automatically, if you're interested see how NTLog is configured and send a pull request!
 
 You can programmatically control what is logged with the logFlags property. This can be set on a per instance basis or set globally using the "logFlags" default.
+
+Release History
+---------------
+
+ - 1.10 - 14-Mar-2014 Added support for self-signed SSL certificates with the arg `[NTApiOptionArg optionAllowInvalidSSLCert:YES]`.
+
+ - 1.00 - 7-Feb-2014 Initial version submitted to cocoapods. Added documentation and a nice sample.
    
 CocoaPods Installation
 ======================
@@ -138,13 +145,12 @@ You can implement your own defaults by loading them in your init method. This al
         return self;
     }
 
-If you would like to have your API error codes converted into "NSString enum's" for you, you can register them with NTApiError. This will convert them to your constant values automatically so you can use == instead of `isEqualToString:`. The best place to do this is in your `+load' method as follows:
+If you would like to have your API error codes converted into "NSString enum's" for you, you can register them with `NTApiError`. This will convert them to your constant values automatically so you can use == instead of `isEqualToString:`. The best place to do this is in your `+load' method as follows:
 
     +(void)load
     {
         [NTApiError addErrorCode:OpenWeatherErrorCodeNotFound];
     }
-
 
 Initialization
 --------------
@@ -167,7 +173,7 @@ Using the API is pretty straight forward, here's an example. (Note this assumes 
         if ( error ) // display API errors
         {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error getting weather"
-                                                                message:error.errorMessage
+                                                    message:error.errorMessage
                                                                delegate:nil
                                                       cancelButtonTitle:@"Ok"
                                                       otherButtonTitles:nil];
@@ -180,6 +186,4 @@ Using the API is pretty straight forward, here's an example. (Note this assumes 
         self.currentWeatherItems = currentWeatherItems;
         [self.tableView reloadData];
     }];
-
-
 

@@ -236,22 +236,22 @@
 		F0A25A671896FBF2006AB1AF /* NTApiClient/Core */ = {
 			isa = PBXGroup;
 			children = (
+				F0F6A64718A5519300B20E67 /* NSThread+MCSMAdditions.h */,
+				F0F6A64818A5519300B20E67 /* NSThread+MCSMAdditions.m */,
 				F0F6A63A18A5519300B20E67 /* NTApiArg.h */,
 				F0F6A63B18A5519300B20E67 /* NTApiArg.m */,
+				F0F6A64218A5519300B20E67 /* NTApiClient.h */,
+				F0F6A64418A5519300B20E67 /* NTApiClient.m */,
 				F0F6A63C18A5519300B20E67 /* NTApiConst.h */,
+				F0F6A64918A5519300B20E67 /* NTApiConst.m */,
 				F0F6A63D18A5519300B20E67 /* NTApiError.h */,
 				F0F6A63E18A5519300B20E67 /* NTApiError.m */,
 				F0F6A63F18A5519300B20E67 /* NTApiRequest.h */,
-				F0F6A64018A5519300B20E67 /* NTApiRequestProcessor.h */,
-				F0F6A64118A5519300B20E67 /* NTApiRequestBuilder.h */,
-				F0F6A64218A5519300B20E67 /* NTApiClient.h */,
-				F0F6A64318A5519300B20E67 /* NTApiRequestBuilder.m */,
-				F0F6A64418A5519300B20E67 /* NTApiClient.m */,
 				F0F6A64518A5519300B20E67 /* NTApiRequest.m */,
+				F0F6A64118A5519300B20E67 /* NTApiRequestBuilder.h */,
+				F0F6A64318A5519300B20E67 /* NTApiRequestBuilder.m */,
+				F0F6A64018A5519300B20E67 /* NTApiRequestProcessor.h */,
 				F0F6A64618A5519300B20E67 /* NTApiRequestProcessor.m */,
-				F0F6A64718A5519300B20E67 /* NSThread+MCSMAdditions.h */,
-				F0F6A64818A5519300B20E67 /* NSThread+MCSMAdditions.m */,
-				F0F6A64918A5519300B20E67 /* NTApiConst.m */,
 				F0F6A64A18A5519300B20E67 /* NTApiResponse.h */,
 				F0F6A64B18A5519300B20E67 /* NTApiResponse.m */,
 			);
@@ -316,7 +316,7 @@
 		F0A25A2D1896FB8B006AB1AF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Nagel Technologies, Inc.";
 				TargetAttributes = {
 					F0A25A4F1896FB8B006AB1AF = {
@@ -435,7 +435,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -474,7 +473,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -538,7 +536,6 @@
 		F0A25A651896FB8B006AB1AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/NTApiSample.app/NTApiSample";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -561,7 +558,6 @@
 		F0A25A661896FB8B006AB1AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/NTApiSample.app/NTApiSample";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

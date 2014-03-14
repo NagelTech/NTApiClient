@@ -13,6 +13,7 @@ extern NSString *NTApiOptionIgnoreHTTPErrorCodes;
 extern NSString *NTApiOptionResponseHandlerThreadType;
 extern NSString *NTApiOptionUploadHandlerThreadType;
 extern NSString *NTApiOptionDownloadHandlerThreadType;
+extern NSString *NTApiOptionAllowInvalidSSLCert;
 
 extern NSString *NTApiHeaderContentType;
 extern NSString *NTApiHeaderAuthorization;

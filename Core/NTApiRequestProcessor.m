@@ -115,7 +115,7 @@
     {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         
-        _response.httpStatusCode = httpResponse.statusCode;
+        _response.httpStatusCode = (int)httpResponse.statusCode;
         _response.headers = httpResponse.allHeaderFields;
     }
     
@@ -176,11 +176,35 @@
 }
 
 
-
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
                   willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
     return _shouldCacheResponse ? cachedResponse : nil;
+}
+
+
+-(BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace
+{
+    if ( self.allowInvalidSSLCert )
+        return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];
+    else
+        return NO;
+}
+
+
+-(void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    if ( [challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust] )
+    {
+        if ( self.allowInvalidSSLCert )
+        {
+            NSURLCredential *credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
+            
+            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+        }
+    }
+    
+    [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
 }
 
 

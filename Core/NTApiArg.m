@@ -290,6 +290,7 @@
     return [NTApiOptionArg optionWithName:NTApiOptionRawData];
 }
 
+
 +(NTApiOptionArg *)optionIgnoreHTTPErrorCodes
 {
     return [NTApiOptionArg optionWithName:NTApiOptionIgnoreHTTPErrorCodes];
@@ -311,6 +312,12 @@
 +(NTApiOptionArg *)optionDownloadHandlerThread:(NTApiThreadType)threadType
 {
     return [NTApiOptionArg optionWithName:NTApiOptionDownloadHandlerThreadType value:threadType];
+}
+
+
++(NTApiOptionArg *)optionAllowInvalidSSLCert:(BOOL)allowInvalidSSLCert
+{
+    return [NTApiOptionArg optionWithName:NTApiOptionAllowInvalidSSLCert value:(allowInvalidSSLCert) ? @"Y" : @"N"];
 }
 
 

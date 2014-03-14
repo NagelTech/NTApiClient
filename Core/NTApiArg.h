@@ -278,6 +278,11 @@
  */
 +(NTApiOptionArg *)optionDownloadHandlerThread:(NTApiThreadType)threadType;
 
+/**
+ * Allows invaid SSL Certificates - use this if you have a self-signed SSL certificate.
+ */
++(NTApiOptionArg *)optionAllowInvalidSSLCert:(BOOL)allowInvalidSSLCert;
+
 -(BOOL)applyArgToBuilder:(NTApiRequestBuilder *)builder;
 -(NSString *)description;
 

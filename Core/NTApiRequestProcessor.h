@@ -21,6 +21,7 @@
 @property (copy, nonatomic, readwrite)     void (^responseHandler)(NTApiResponse *response);
 @property (copy, nonatomic, readwrite)     void (^uploadProgressHandler)(int bytesSent, int totalBytes);
 @property (copy, nonatomic, readwrite)     void (^downloadProgressHandler)(int bytesReceived, int totalBytes);
+@property (nonatomic)                      BOOL allowInvalidSSLCert;
 
 @property (readonly, nonatomic)           NSURLRequest   *request;
 @property (readonly, nonatomic)           NTApiResponse  *response;

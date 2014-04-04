@@ -349,7 +349,7 @@
 
 -(BOOL)applyArgToBuilder:(NTApiRequestBuilder *)builder
 {
-    return [builder addOptionWithName:self.name value:self.value];
+    return [builder addHeaderWithName:self.name value:self.value];
 }
 
 

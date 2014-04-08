@@ -22,6 +22,7 @@
 @property (strong,nonatomic)    NSArray             *args;
 @property (strong, nonatomic)   NTApiError          *error;
 @property (strong,nonatomic)    NSString            *multipartBoundry;
+@property (nonatomic)           NSString            *defaultHttpMethod;
 
 
 -(BOOL)initializeMultipart;
@@ -67,6 +68,7 @@
 @synthesize formString = mFormString;
 @synthesize multipartData = mMulipartData;
 @synthesize rawData = mRawData;
+@synthesize defaultHttpMethod = mDefaltHttpMethod;
 
 
 +(NSString *)urlEncode:(NSString *)string
@@ -74,10 +76,10 @@
     // based on: http://madebymany.com/blog/url-encoding-an-nsstring-on-ios
     
     return (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,
-                                                                        (__bridge CFStringRef)string,
-                                                                        NULL,
-                                                                        (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
-                                                                        CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+                                                                                 (__bridge CFStringRef)string,
+                                                                                 NULL,
+                                                                                 (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
+                                                                                 CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
 }
 
 
@@ -102,18 +104,18 @@ static char NTBase64EncodingTable[64] = {
     const unsigned char *raw;
     NSMutableString *result;
     
-    lentext = [data length]; 
+    lentext = [data length];
     if (lentext < 1)
         return @"";
     result = [NSMutableString stringWithCapacity: lentext];
     raw = [data bytes];
-    ixtext = 0; 
+    ixtext = 0;
     
     while (true) {
         ctremaining = lentext - ixtext;
-        if (ctremaining <= 0) 
-            break;        
-        for (i = 0; i < 3; i++) { 
+        if (ctremaining <= 0)
+            break;
+        for (i = 0; i < 3; i++) {
             unsigned long ix = ixtext + i;
             if (ix < lentext)
                 input[i] = raw[ix];
@@ -126,11 +128,11 @@ static char NTBase64EncodingTable[64] = {
         output[3] = input[2] & 0x3F;
         ctcopy = 4;
         switch (ctremaining) {
-            case 1: 
-                ctcopy = 2; 
+            case 1:
+                ctcopy = 2;
                 break;
-            case 2: 
-                ctcopy = 3; 
+            case 2:
+                ctcopy = 3;
                 break;
         }
         
@@ -145,9 +147,9 @@ static char NTBase64EncodingTable[64] = {
         
         if ((data.length > 0) && (charsonline >= data.length))
             charsonline = 0;
-    }     
+    }
     return result;
-  
+    
 }
 
 
@@ -180,7 +182,7 @@ static char NTBase64EncodingTable[64] = {
     if ( self.urlString.length > 0 )
         [self.urlString appendString:@"&"];
     
-    [self.urlString appendFormat:@"%@=%@", name, [NTApiRequestBuilder urlEncode:value]]; 
+    [self.urlString appendFormat:@"%@=%@", name, [NTApiRequestBuilder urlEncode:value]];
     
     return YES;
 }
@@ -190,7 +192,7 @@ static char NTBase64EncodingTable[64] = {
 {
     if ( !value )
         return YES; // ignore nil values
-
+    
     [self.headers setObject:value forKey:name];
     
     return YES;
@@ -201,7 +203,7 @@ static char NTBase64EncodingTable[64] = {
 {
     if ( !value )
         return YES; // ignore nil values
-
+    
     if ( self.multipartData || self.rawData )
     {
         self.error = [NTApiError errorWithCode:NTApiErrorCodeError message:@"RequestBuilder: form data may not be combined with multipart or raw data"];
@@ -211,7 +213,7 @@ static char NTBase64EncodingTable[64] = {
     
     if ( !self.formString ) // initialize if this is the first form value
     {
-        self.httpMethod = @"POST";
+        self.defaultHttpMethod = @"POST";
         self.formString = [NSMutableString new];
         [self addHeaderWithName:NTApiHeaderContentType value:@"application/x-www-form-urlencoded"];
     }
@@ -219,7 +221,7 @@ static char NTBase64EncodingTable[64] = {
         [self.formString appendString:@"&"];
     
     [self.formString appendFormat:@"%@=%@", name, [NTApiRequestBuilder urlEncode:value]];
-
+    
     return YES;
 }
 
@@ -235,7 +237,7 @@ static char NTBase64EncodingTable[64] = {
     
     if ( !self.multipartData ) // initialize if this is the first multipart value.
     {
-        self.httpMethod = @"POST";
+        self.defaultHttpMethod = @"POST";
         [self addHeaderWithName:NTApiHeaderContentType value:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", self.multipartBoundry]];
         
         self.multipartData = [NSMutableData new];
@@ -251,7 +253,7 @@ static char NTBase64EncodingTable[64] = {
 {
     if ( !value )
         return YES; // ignore nil values
-
+    
     if ( ![self initializeMultipart] )
         return NO;
     
@@ -272,7 +274,7 @@ static char NTBase64EncodingTable[64] = {
 {
     if ( !data )
         return YES; // ignore nil values
-
+    
     if ( ![self initializeMultipart] )
         return NO;
     
@@ -283,7 +285,7 @@ static char NTBase64EncodingTable[64] = {
     [self.multipartData appendFormat:@"\r\n"];
     
     [self.multipartData appendFormat:@"--%@\r\n", self.multipartBoundry];
-
+    
     return YES;
 }
 
@@ -292,7 +294,7 @@ static char NTBase64EncodingTable[64] = {
 {
     if ( !data )
         return YES; // ignore nil values
-
+    
     if ( self.multipartData || self.formString )
     {
         self.error = [NTApiError errorWithCode:NTApiErrorCodeError message:@"RequestBuilder: raw data may not be combined with multipart or form data"];
@@ -307,10 +309,10 @@ static char NTBase64EncodingTable[64] = {
         return NO;
     }
     
-    self.httpMethod = @"POST";
+    self.defaultHttpMethod = @"POST";
     [self addHeaderWithName:NTApiHeaderContentType value:contentType];
     self.rawData = data;
-
+    
     return YES;
 }
 
@@ -336,7 +338,8 @@ static char NTBase64EncodingTable[64] = {
     self.baseUrl = nil;
     self.headers = [NSMutableDictionary new];
     self.options = [NSMutableDictionary new];
-    self.httpMethod = @"GET";   // default
+    self.httpMethod = nil;   // default - autodetect
+    self.defaultHttpMethod = @"GET";
     self.timeout = 60;          // default to 60 seconds
     self.cachePolicy = NSURLRequestUseProtocolCachePolicy;  // default
     
@@ -347,7 +350,7 @@ static char NTBase64EncodingTable[64] = {
     self.rawData = nil;
     
     // Loop through each argument, applying it to ourselves...
-
+    
     for(NTApiArg *arg in self.args)
     {
         if ( ![arg applyArgToBuilder:self] )
@@ -361,7 +364,7 @@ static char NTBase64EncodingTable[64] = {
         self.error = [NTApiError errorWithCode:NTApiErrorCodeError message:@"RequestBuilder: baseUrl not set"];
         return nil;
     }
-
+    
     // Now that we have applied all our arguments successfully, we can build the request...
     
     NSString *url = (self.urlString && self.urlString.length) ? [NSString stringWithFormat:@"%@?%@", self.baseUrl, self.urlString] : self.baseUrl;
@@ -380,10 +383,10 @@ static char NTBase64EncodingTable[64] = {
         [request setHTTPBody:self.rawData];
     else
         [request setHTTPBody:[@"" dataUsingEncoding:NSUTF8StringEncoding]]; // It's an empty request, but we can't leave it null
-
+    
     // Set our method...
     
-    request.HTTPMethod = self.httpMethod;
+    request.HTTPMethod = (self.httpMethod) ? self.httpMethod : self.defaultHttpMethod;
     
     // Set timeout...
     

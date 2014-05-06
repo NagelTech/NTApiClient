@@ -531,23 +531,26 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                 
                 if ( !response.json )
                 {
-                  NSString *text = [[NSString alloc] initWithData:response.data encoding:NSUTF8StringEncoding];
+                    NSString *text = [[NSString alloc] initWithData:response.data encoding:NSUTF8StringEncoding];
                     
-                    // Try to find the start of the JSON data...
-                    
-                    NSRange range = [text rangeOfString:@"{"];
-                    
-                    if ( range.location != NSNotFound )
+                    if ( text )
                     {
-                        NSString *prefixText = [text substringToIndex:range.location];
-                        text = [text substringFromIndex:range.location];
+                        // Try to find the start of the JSON data...
                         
-                        LogWarn(@"Prefix text found: %@", prefixText);
+                        NSRange range = [text rangeOfString:@"{"];
                         
-                        response.prefixText = prefixText;
-                        
-                        error = nil;
-                        response.json = [self.class parseJsonData:[text dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+                        if ( range.location != NSNotFound )
+                        {
+                            NSString *prefixText = [text substringToIndex:range.location];
+                            text = [text substringFromIndex:range.location];
+                            
+                            LogWarn(@"Prefix text found: %@", prefixText);
+                            
+                            response.prefixText = prefixText;
+                            
+                            error = nil;
+                            response.json = [self.class parseJsonData:[text dataUsingEncoding:NSUTF8StringEncoding] error:&error];
+                        }
                     }
                 }
                 

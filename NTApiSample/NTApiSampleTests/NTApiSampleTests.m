@@ -7,6 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "ApiClientTypeA.h"
+#import "ApiClientTypeB.h"
 
 @interface NTApiSampleTests : XCTestCase
 
@@ -26,9 +28,32 @@
     [super tearDown];
 }
 
-- (void)testExample
+
+- (void)testSimpleDefault
 {
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    NSString* defaultKey = @"someDefault";
+    NSString* defaultVal = @"DefaultVal";
+
+    [ApiClientTypeA setDefault:defaultKey value:defaultVal];
+    XCTAssertEqual([ApiClientTypeA getDefault:defaultKey], defaultVal);
+
 }
+
+- (void)testMultiImplDefault
+{
+    NSString* defaultKey = @"someDefault";
+    NSString* defaultValA = @"typeADefault";
+    NSString* defaultValB = @"typeBDefault";
+
+    [ApiClientTypeA setDefault:defaultKey value:defaultValA];
+    XCTAssertEqual([ApiClientTypeA getDefault:defaultKey], defaultValA);
+
+    [ApiClientTypeB setDefault:defaultKey value:defaultValB];
+    XCTAssertEqual([ApiClientTypeA getDefault:defaultKey], defaultValA);
+
+    XCTAssertEqual([ApiClientTypeB getDefault:defaultKey], defaultValB);
+
+}
+
 
 @end

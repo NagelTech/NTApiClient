@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		585A9D8A19BE8A080030AE63 /* NTApiRaceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 585A9D8919BE8A080030AE63 /* NTApiRaceTest.m */; };
+		589499A619BE82DB004FD970 /* ApiClientTypeA.m in Sources */ = {isa = PBXBuildFile; fileRef = 589499A519BE82DB004FD970 /* ApiClientTypeA.m */; };
+		589499A919BE82EA004FD970 /* ApiClientTypeB.m in Sources */ = {isa = PBXBuildFile; fileRef = 589499A819BE82EA004FD970 /* ApiClientTypeB.m */; };
 		F0531FE4189DF50B00527132 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FE2189DF50B00527132 /* MainViewController.m */; };
 		F0531FE5189DF50B00527132 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F0531FE3189DF50B00527132 /* MainViewController.xib */; };
 		F0531FE9189EB1A900527132 /* AppSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = F0531FE8189EB1A900527132 /* AppSettings.m */; };
@@ -53,6 +56,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		585A9D8919BE8A080030AE63 /* NTApiRaceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NTApiRaceTest.m; sourceTree = "<group>"; };
+		589499A419BE82DB004FD970 /* ApiClientTypeA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiClientTypeA.h; sourceTree = "<group>"; };
+		589499A519BE82DB004FD970 /* ApiClientTypeA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiClientTypeA.m; sourceTree = "<group>"; };
+		589499A719BE82EA004FD970 /* ApiClientTypeB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiClientTypeB.h; sourceTree = "<group>"; };
+		589499A819BE82EA004FD970 /* ApiClientTypeB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApiClientTypeB.m; sourceTree = "<group>"; };
 		F0531FE1189DF50B00527132 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		F0531FE2189DF50B00527132 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		F0531FE3189DF50B00527132 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
@@ -219,7 +227,12 @@
 			isa = PBXGroup;
 			children = (
 				F0A25A5D1896FB8B006AB1AF /* NTApiSampleTests.m */,
+				585A9D8919BE8A080030AE63 /* NTApiRaceTest.m */,
 				F0A25A581896FB8B006AB1AF /* Supporting Files */,
+				589499A419BE82DB004FD970 /* ApiClientTypeA.h */,
+				589499A519BE82DB004FD970 /* ApiClientTypeA.m */,
+				589499A719BE82EA004FD970 /* ApiClientTypeB.h */,
+				589499A819BE82EA004FD970 /* ApiClientTypeB.m */,
 			);
 			path = NTApiSampleTests;
 			sourceTree = "<group>";
@@ -398,6 +411,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F0A25A5E1896FB8B006AB1AF /* NTApiSampleTests.m in Sources */,
+				585A9D8A19BE8A080030AE63 /* NTApiRaceTest.m in Sources */,
+				589499A919BE82EA004FD970 /* ApiClientTypeB.m in Sources */,
+				589499A619BE82DB004FD970 /* ApiClientTypeA.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

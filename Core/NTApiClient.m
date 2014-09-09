@@ -104,11 +104,11 @@
 #   import "SBJson.h"
 #endif
 
+#import "objc/runtime.h"
 
 @interface NTApiClient ()
 {
 }
-
 
 +(NSThread *)requestThread;
 
@@ -119,14 +119,21 @@
 
 @implementation NTApiClient
 
-
-static NSMutableDictionary  *sDefaults = nil;
-
 static NSThread             *sRequestThread = nil;
 static NSRunLoop            *sRequestRunLoop = nil;
 static NSPort               *sRequestRunLoopPort = nil;
 static NSOperationQueue     *sResponseQueue = nil;
+static dispatch_queue_t      sDefaultInitQueue = nil;
 
++(void)initialize
+{
+    //Initialize will be called by subclasses that don't
+    //implement their own initialize! So one-time set up
+    //should have a guard clause like this.
+    if ( self == [NTApiClient class] ) {
+        sDefaultInitQueue = dispatch_queue_create("NTApiClient default init queue", DISPATCH_QUEUE_SERIAL);
+    }
+}
 
 -(void)writeLogWithType:(NTApiLogType)logType andFormat:(NSString *)format, ...
 {
@@ -168,19 +175,30 @@ static NSOperationQueue     *sResponseQueue = nil;
 
 +(void)setDefault:(NSString *)key value:(id)value
 {
-    if ( !sDefaults )
-        sDefaults = [NSMutableDictionary new];
+    dispatch_sync(sDefaultInitQueue, ^{
 
-    [sDefaults setObject:(value) ? value : [NSNull null] forKey:key];
+        NSMutableDictionary* defaults = objc_getAssociatedObject(self, @selector(getDefault:));
+
+        if ( !defaults ) {
+            defaults = [NSMutableDictionary dictionaryWithCapacity:1];
+            objc_setAssociatedObject(self, @selector(getDefault:), defaults, OBJC_ASSOCIATION_RETAIN);
+        }
+
+        [defaults setObject:(value) ? value : [NSNull null] forKey:key];
+  });
 }
 
 
 +(id)getDefault:(NSString *)key
 {
-    if (!sDefaults )
+
+    NSMutableDictionary* defaults = objc_getAssociatedObject(self, @selector(getDefault:));
+
+    if ( !defaults ) {
         return nil;
-    
-    id value = [sDefaults objectForKey:key];
+    }
+
+    id value = [defaults objectForKey:key];
     
     if ( value && [value conformsToProtocol:@protocol(NTApiClientDefaultProvider)] )
         value = [value getApiClientDefault:key];

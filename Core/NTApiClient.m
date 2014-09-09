@@ -312,9 +312,9 @@ static dispatch_queue_t      sDefaultInitQueue = nil;
 {
     if ( (self=[super init]) )
     {
-        self.baseUrl = [NTApiClient getDefault:@"baseUrl"];
+        self.baseUrl = [[self class] getDefault:@"baseUrl"];
         
-        NSNumber *logFlags = [NTApiClient getDefault:@"logFlags"];
+        NSNumber *logFlags = [[self class] getDefault:@"logFlags"];
         
         self.logFlags = (logFlags) ? [logFlags intValue] : NTApiLogTypeAll;
     }

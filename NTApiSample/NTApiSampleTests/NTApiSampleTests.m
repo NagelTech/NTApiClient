@@ -49,10 +49,27 @@
     XCTAssertEqual([ApiClientTypeA getDefault:defaultKey], defaultValA);
 
     [ApiClientTypeB setDefault:defaultKey value:defaultValB];
+
     XCTAssertEqual([ApiClientTypeA getDefault:defaultKey], defaultValA);
 
     XCTAssertEqual([ApiClientTypeB getDefault:defaultKey], defaultValB);
 
+}
+
+- (void)testInternallyUsedDefaults
+{
+    NSString* defaultKey = @"baseUrl";
+    NSString* defaultValA = @"url1.example.com";
+    NSString* defaultValB = @"url2.example.com";
+
+    [ApiClientTypeA setDefault:defaultKey value:defaultValA];
+    [ApiClientTypeB setDefault:defaultKey value:defaultValB];
+
+    ApiClientTypeA* clientA = [[ApiClientTypeA alloc] init];
+    ApiClientTypeB* clientB = [[ApiClientTypeB alloc] init];
+
+    XCTAssertEqual(clientA.baseUrl, defaultValA);
+    XCTAssertEqual(clientB.baseUrl, defaultValB);
 }
 
 

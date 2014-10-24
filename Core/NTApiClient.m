@@ -105,6 +105,25 @@
 #endif
 
 
+@interface NSData(Encode)
+-(NSString*)string;
+-(NSString*)stringWithEncoding:(NSStringEncoding)encoding;
+@end
+
+@implementation NSData(Encode)
+-(NSString*)string
+{
+    return [self stringWithEncoding:NSUTF8StringEncoding];
+}
+
+-(NSString*)stringWithEncoding:(NSStringEncoding)encoding
+{
+    return [[NSString alloc] initWithData:self encoding:encoding];
+}
+@end
+
+
+
 @interface NTApiClient ()
 {
 }
@@ -473,7 +492,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
     if ( [[request HTTPMethod] isEqualToString:@"POST"] )
     {
         LogDebug(@"< < < < < < < < < < < < < < < < < < < < <");
-        LogDebug(@"%.*s", [[request HTTPBody] length], [[request HTTPBody] bytes]);
+        LogDebug(@"%.*s", [[request HTTPBody] length], [[request HTTPBody] string]);
         LogDebug(@"< < < < < < < < < < < < < < < < < < < < <");
     }
     
@@ -559,7 +578,7 @@ downloadProgressHandler:(void (^)(int bytesReceived, int totalBytes))downloadPro
                     if ( error )
                         LogError(@"JSON parser error - %@", error);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
-                    LogError(@"%.*s", response.data.length, response.data.bytes);
+                    LogError(@"%.*s", response.data.length, [response.data string]);
                     LogError(@"> > > > > > > > > > > > > > > > > > > > >");
                     
                     response.error = [NTApiError errorWithCode:NTApiErrorCodeInvalidJson message:@"Unable to Parse JSON response"];
